@@ -28,8 +28,10 @@ jobs:
 
       # Step 3: Install dependencies
       - name: Install dependencies
+        working-directory: client
         run: npm install
 
       # Step 4: Build the project
       - name: Build the project
+        working-directory: client
         run: npm run build
