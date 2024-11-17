@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchUsers, toggleUserStatus } from './slices/userSlice';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers, toggleUserStatus } from "../slices/userSlice";
 
 const Admin = () => {
   const dispatch = useDispatch();
@@ -16,12 +16,11 @@ const Admin = () => {
   // Function to handle activating or deactivating a user
   const handleToggleStatus = (userId, isActive) => {
     if (isActive) {
-      dispatch(deactivateUser(userId));  // Deactivate user
+      dispatch(deactivateUser(userId)); // Deactivate user
     } else {
-      dispatch(activateUser(userId));    // Activate user
+      dispatch(activateUser(userId)); // Activate user
     }
   };
-  
 
   // Filter users into active and new users
   const activeUsers = users.filter((user) => user.isActive);
