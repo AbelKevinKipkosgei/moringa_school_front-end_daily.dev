@@ -14,6 +14,10 @@ function Navbar() {
         <li className="navbar-item">
           <Link to="/signup">Sign up</Link>
         </li>
+        <li className="navbar-item">
+            <Link to="/techwriter">Techwriter</Link>
+
+        </li>
       </ul>
     </nav>
   );
