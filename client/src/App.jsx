@@ -12,6 +12,7 @@ import FlaggedPosts from "./components/FlaggedPosts";
 import ApprovedPosts from "./components/ApprovedPosts";
 import PostPage from "./pages/PostPage";
 import ManageUser from "./components/ManageUser"
+import ManageCategory from "./components/ManageCategory";
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
         {/* Admin Route with Nested Routes */}
         <Route path="/admin" element={<Admin />}>
           <Route path="manageusers" element={<ManageUser />} />
+          <Route path="managecategory" element={<ManageCategory />} />
           <Route path="approvedposts" element={<ApprovedPosts />} />
           <Route path="flaggedposts" element={<FlaggedPosts />} />
         </Route>
