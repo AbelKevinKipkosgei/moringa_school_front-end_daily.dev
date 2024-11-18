@@ -1,33 +1,35 @@
 // categorySlice.js
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 
-// Async thunk to create a new category
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+
+// Define the async thunk for creating a category
 export const createCategory = createAsyncThunk(
   'categories/createCategory',
   async (categoryData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://127.0.0.1:5555/api/admin/categories', categoryData);
-      return response.data;
+      const token = localStorage.getItem('access_token');
+      const response = await fetch('/api/categories/createcategory', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(categoryData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create category');
+      }
+
+      const data = await response.json();
+      return data;  // Success - Return the category data
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(error.message || 'Something went wrong'); // Return error message
     }
   }
 );
 
-// Fetch categories (useful if you need a list in the dashboard)
-export const fetchCategories = createAsyncThunk(
-  'categories/fetchCategories',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await axios.get('http://127.0.0.1:5555/api/admin/categories');
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
-
+// Create the slice
 const categorySlice = createSlice({
   name: 'categories',
   initialState: {
@@ -39,22 +41,17 @@ const categorySlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(createCategory.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loading = true; // Set loading state to true
       })
       .addCase(createCategory.fulfilled, (state, action) => {
-        state.loading = false;
-        state.categories.push(action.payload);
+        state.loading = false; // Set loading state to false
+        state.categories.push(action.payload); // Add new category to the state
       })
       .addCase(createCategory.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(fetchCategories.fulfilled, (state, action) => {
-        state.categories = action.payload;
+        state.loading = false; // Set loading state to false
+        state.error = action.payload; // Set error message
       });
   },
 });
 
-export const categoryReducer = categorySlice.reducer;
-export default categoryReducer;
+export default categorySlice.reducer; // Export the reducer to be used in the store
