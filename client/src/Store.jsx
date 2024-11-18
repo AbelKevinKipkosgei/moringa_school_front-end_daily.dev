@@ -4,6 +4,8 @@ import signUpReducer from './slices/signUpSlice';
 import logInReducer from './slices/logInSlice';
 import postsReducer from './slices/postsSlice';
 import authReducer from "./slices/authSlice";
+import feedReducer from './slices/feedSlice';
+
 
 
 const store = configureStore({
@@ -13,7 +15,7 @@ const store = configureStore({
     logIn: logInReducer,
     posts: postsReducer,
     auth: authReducer,
-   
+    feed: feedReducer,
   },
 });
 

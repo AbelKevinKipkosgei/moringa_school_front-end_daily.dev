@@ -9,6 +9,9 @@ function Navbar() {
           <Link to="/admin">Admin</Link>
         </li>
         <li className="navbar-item">
+          <Link to="/feed">Feed</Link>
+        </li>
+        <li className="navbar-item">
           <Link to="/login">Login</Link>
         </li>
         <li className="navbar-item">

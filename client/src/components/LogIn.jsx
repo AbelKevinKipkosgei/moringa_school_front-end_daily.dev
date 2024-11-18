@@ -3,9 +3,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { loginStart, loginSuccess, loginFailure } from "../slices/signUpSlice";
 import "../styles/LogIn.css";
+import { useState } from "react"; // Import useState
 
 const Login = () => {
   const dispatch = useDispatch();
+
+  // Local state to track loading state for the login process
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // Formik setup for login form
   const formik = useFormik({
@@ -20,6 +24,8 @@ const Login = () => {
         .required("Password is required"),
     }),
     onSubmit: async (values) => {
+      setIsLoggingIn(true); // Set loading state to true when submitting
+
       dispatch(loginStart());
 
       try {
@@ -35,15 +41,25 @@ const Login = () => {
         });
 
         if (!response.ok) {
+          // Handle specific error for email not found
+          const errorData = await response.json();
+          if (errorData.message === "Invalid credentials") {
+            throw new Error("Invalid credentials");
+          }
           throw new Error("Login failed");
         }
 
         const data = await response.json();
         dispatch(loginSuccess(data)); // Handle user data or token
+
+        // Reset the form on successful login
+        formik.resetForm();
         alert("Login successful!");
       } catch (error) {
         dispatch(loginFailure(error.message)); // Handle error
-        alert("Login failed. Please try again.");
+        alert(error.message);
+      } finally {
+        setIsLoggingIn(false); // Reset loading state
       }
     },
   });
@@ -84,8 +100,9 @@ const Login = () => {
           )}
         </div>
 
-        <button type="submit" className="submit-button">
-          Login
+        <button type="submit" className="submit-button" disabled={isLoggingIn}>
+          {isLoggingIn ? "Logging in..." : "Login"}{" "}
+          {/* Conditional button text */}
         </button>
       </form>
     </div>

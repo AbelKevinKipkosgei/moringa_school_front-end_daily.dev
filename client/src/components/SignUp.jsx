@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
+import { useState } from "react";
 import * as Yup from "yup";
 import {
   signupStart,
@@ -10,6 +11,7 @@ import "../styles/SignUp.css";
 
 const SignUp = () => {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -31,21 +33,23 @@ const SignUp = () => {
       username: Yup.string().required("Username is required"),
       bio: Yup.string().required("Bio is required"),
       profile_pic_url: Yup.mixed()
+        .nullable()
+        .required("Profile picture is required")
         .test(
           "fileSize",
           "File size is too large",
-          (value) => value && value.size <= 5 * 1024 * 1024 // 2MB limit
+          (value) => !value || value.size <= 5 * 1024 * 1024 // 5MB limit
         )
         .test(
           "fileType",
           "Unsupported file type",
           (value) =>
-            value &&
+            !value ||
             ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
-        )
-        .required("Profile picture is required"),
+        ),
     }),
     onSubmit: async (values) => {
+      setLoading(true);
       dispatch(signupStart());
 
       try {
@@ -56,22 +60,34 @@ const SignUp = () => {
         formData.append("bio", values.bio);
         formData.append("profile_pic_url", values.profile_pic_url);
 
-        const response = await fetch("/api/signup/", {
+        const response = await fetch("/api/signup", {
           method: "POST",
-          body: formData,
+          body: formData, // FormData automatically sets the appropriate Content-Type
         });
-
         if (!response.ok) {
-          throw new Error("Sign-up failed");
-        }
+          const errorData = await response.json();
 
-        const data = await response.json();
-        dispatch(signupSuccess(data));
-        alert("Sign-up successful!");
-        formik.resetForm(); // Reset fields
+          // Handle specific error from backend
+          if (errorData.message === "User with this email already exists") {
+            formik.setFieldError("email", errorData.message);
+          } else {
+            throw new Error("Sign-up failed. Please try again.");
+          }
+        } else {
+          const data = await response.json();
+          dispatch(signupSuccess(data));
+          alert("Sign-up successful!");
+          formik.resetForm();
+
+          // Clear the file input after reset
+          document.getElementById("profile_pic_url").value = "";
+        }
       } catch (error) {
+        // Handle any errors
         dispatch(signupFailure(error.message));
-        alert("Sign-up failed. Please try again.");
+        alert(error.message);
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -165,12 +181,10 @@ const SignUp = () => {
             type="file"
             id="profile_pic_url"
             name="profile_pic_url"
-            onChange={(event) =>
-              formik.setFieldValue(
-                "profile_pic_url",
-                event.currentTarget.files[0]
-              )
-            }
+            onChange={(event) => {
+              const file = event.currentTarget.files[0];
+              formik.setFieldValue("profile_pic_url", file);
+            }}
           />
           {formik.touched.profile_pic_url && formik.errors.profile_pic_url && (
             <div className="error">{formik.errors.profile_pic_url}</div>
@@ -178,7 +192,9 @@ const SignUp = () => {
         </div>
 
         {/* Submit Button */}
-        <button type="submit">Sign Up</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Signing Up..." : "Sign Up"}
+        </button>
       </form>
     </div>
   );
