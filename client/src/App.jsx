@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux"; // Import useSelector to access state
 import Navbar from "./components/Navbar";
@@ -11,6 +10,7 @@ import AdminTechwriterProtectedRoute from "./components/AdminTechwriterProtected
 import ManagePosts from "./components/ManagePosts";
 import FlaggedPosts from "./components/FlaggedPosts";
 import ApprovedPosts from "./components/ApprovedPosts";
+import PostPage from "./pages/PostPage";
 
 function App() {
   // Accessing the state using useSelector
@@ -22,13 +22,17 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/feed" element={<FeedPage />} />
+        <Route path="/post/:postId" element={<PostPage />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route
           path="/techwriter/*"
           element={
-            <AdminTechwriterProtectedRoute isLoggedIn={isLoggedIn} userRole={userRole}>
+            <AdminTechwriterProtectedRoute
+              isLoggedIn={isLoggedIn}
+              userRole={userRole}
+            >
               <Techwriter />
             </AdminTechwriterProtectedRoute>
           }
