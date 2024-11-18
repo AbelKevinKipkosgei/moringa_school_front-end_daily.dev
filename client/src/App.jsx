@@ -11,6 +11,8 @@ import AdminTechwriterProtectedRoute from "./components/AdminTechwriterProtected
 import ManagePosts from "./components/ManagePosts";
 import FlaggedPosts from "./components/FlaggedPosts";
 import ApprovedPosts from "./components/ApprovedPosts";
+import ManageUser from "./components/ManageUser"
+
 
 function App() {
   // Accessing the state using useSelector
@@ -22,9 +24,22 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/feed" element={<FeedPage />} />
-        <Route path="/admin" element={<Admin />} />
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/Admin" element={<Admin />} />
+        
+        
+        
+        {/* Admin Route with Nested Routes */}
+        <Route path="/admin" element={<Admin />}>
+          <Route path="manageusers" element={<ManageUser />} />
+          <Route path="approvedposts" element={<ApprovedPosts />} />
+          <Route path="flaggedposts" element={<FlaggedPosts />} />
+        </Route>
+  
+        
+        
+        {/* Techwriter protected route */}
         <Route
           path="/techwriter/*"
           element={
@@ -33,7 +48,7 @@ function App() {
             </AdminTechwriterProtectedRoute>
           }
         >
-          {/* Nested routes inside AdminTechwriterProtectedRoute */}
+          {/* Nested routes inside Techwriter */}
           <Route path="manageposts" element={<ManagePosts />} />
           <Route path="flaggedposts" element={<FlaggedPosts />} />
           <Route path="approvedposts" element={<ApprovedPosts />} />

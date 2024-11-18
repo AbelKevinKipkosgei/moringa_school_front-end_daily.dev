@@ -1,98 +1,58 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, toggleUserStatus } from "../slices/userSlice";
+import React from "react";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 
 const Admin = () => {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // Get users, loading, and error states from the Redux store
-  const { users, loading, error } = useSelector((state) => state.users);
+  // Function to check active link
+  const isActive = (path) => location.pathname === path;
 
-  // Fetch all users when the component mounts
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
-
-  // Function to handle activating or deactivating a user
-  const handleToggleStatus = (userId, isActive) => {
-    if (isActive) {
-      dispatch(deactivateUser(userId)); // Deactivate user
-    } else {
-      dispatch(activateUser(userId)); // Activate user
-    }
-  };
-
-  // Filter users into active and new users
-  const activeUsers = users.filter((user) => user.isActive);
-  const newUsers = users.filter((user) => !user.isActive);
+  // Handlers for navigation
+  const handleManageUser = () => navigate("/admin/manageusers");
+  const handleApprovedPosts = () => navigate("/admin/approvedposts");
+  const handleFlaggedPosts = () => navigate("/admin/flaggedposts");
+  const handleCategories = () => navigate("/admin/managecategories");
 
   return (
-    <div>
-      <h2>Admin Panel</h2>
+    <div className="admin-page">
+      {/* Sidebar */}
+      <nav className="sidebar">
+        <h2 className="sidebar-heading">Admin Dashboard</h2>
+        <ul className="sidebar-nav">
+          <li
+            className={isActive("/admin/manageusers") ? "active" : ""}
+            onClick={handleManageUser}
+          >
+            Users
+          </li>
+          <li
+            className={isActive("/admin/approvedposts") ? "active" : ""}
+            onClick={handleApprovedPosts}
+          >
+            Approved Posts
+          </li>
+          <li
+            className={isActive("/admin/flaggedposts") ? "active" : ""}
+            onClick={handleFlaggedPosts}
+          >
+            Flagged Posts
+          </li>
+          <li
+            className={isActive("/admin/managecategories") ? "active" : ""}
+            onClick={handleCategories}
+          >
+            Categories
+          </li>
+        </ul>
+      </nav>
 
-      {/* Display loading or error messages */}
-      {loading && <p>Loading users...</p>}
-      {error && <p>Error: {error}</p>}
-
-      {/* Active Users Section */}
-      <h3>Active Users</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {activeUsers.map((user) => (
-            <tr key={user.id}>
-              <td>{user.username}</td>
-              <td>{user.email}</td>
-              <td>{user.role}</td>
-              <td>
-                <button
-                  onClick={() => handleToggleStatus(user.id, user.isActive)}
-                >
-                  Deactivate
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* New Users Section */}
-      <h3>New Users</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {newUsers.map((user) => (
-            <tr key={user.id}>
-              <td>{user.username}</td>
-              <td>{user.email}</td>
-              <td>{user.role}</td>
-              <td>
-                <button
-                  onClick={() => handleToggleStatus(user.id, user.isActive)}
-                >
-                  Activate
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* Main Content */}
+      <div className="main-content">
+        <Outlet />
+      </div>
     </div>
   );
 };
 
-export default Admin;
+export default Admin; // Ensure default export

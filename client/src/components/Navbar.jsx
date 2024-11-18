@@ -6,7 +6,7 @@ function Navbar() {
     <nav className="navbar">
       <ul className="navbar-list">
         <li className="navbar-item">
-          <Link to="/admin">Admin</Link>
+          <Link to="/Admin">Admin</Link>
         </li>
         <li className="navbar-item">
           <Link to="/feed">Feed</Link>
