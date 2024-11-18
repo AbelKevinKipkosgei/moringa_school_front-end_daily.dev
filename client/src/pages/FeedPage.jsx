@@ -1,13 +1,16 @@
 import Feed from "../components/Feed";
+import '../styles/FeedPage.css'
 
 const FeedPage = () => {
 
     return (
-        <div>
-            <h1>My feed page</h1>
-            <Feed />
+      <div className="feed-page-container">
+        <h1 className="feed-page-title">Feed page</h1>
+        <div className="feed-container">
+          <Feed />
         </div>
-    )
+      </div>
+    );
 }
 
 export default FeedPage;

@@ -10,7 +10,7 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/" element={<FeedPage />} />
+        <Route path="/feed" element={<FeedPage />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/login" element={<LogInPage/>} />
         <Route path="/signup" element={<SignUpPage />} />
