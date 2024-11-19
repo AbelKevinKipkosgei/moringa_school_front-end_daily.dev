@@ -48,7 +48,7 @@
 }
 
 .sidebar-nav li.active {
-  background-color: #4CAF50;
+  background-color: #007bff;;
 }
 
 .sidebar-nav li:hover:not(.active) {
@@ -99,13 +99,13 @@
   }
   
   .deactivate-btn {
-    background-color: #f44336;
+    background-color: #007bff;;
     color: white;
     border: none;
   }
   
   .activate-btn {
-    background-color: #4CAF50;
+    background-color: #007bff;
     color: white;
     border: none;
   }
