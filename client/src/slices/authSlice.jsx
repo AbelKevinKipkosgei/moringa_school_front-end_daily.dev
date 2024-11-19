@@ -8,7 +8,7 @@ const initialState = {
   userRole: localStorage.getItem(USER_ROLE_KEY) || null,
   loading: false,
   error: null,
-  userInfo: null, // To store user info after successful signup
+  userInfo: null, 
 };
 
 const authSlice = createSlice({
