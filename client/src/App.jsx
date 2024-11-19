@@ -10,7 +10,6 @@ import ManagePosts from "./components/ManagePosts";
 import FlaggedPosts from "./components/FlaggedPosts";
 import ApprovedPosts from "./components/ApprovedPosts";
 import PostPage from "./pages/PostPage";
-import ManageUser from "./components/ManageUser";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 
 function App() {
@@ -26,7 +25,6 @@ function App() {
 
         {/* Admin Route */}
         <Route path="/admin/*" element={<Admin />}>
-          <Route path="manageusers" element={<ManageUser />} />
           <Route path="approvedposts" element={<ApprovedPosts />} />
           <Route path="flaggedposts" element={<FlaggedPosts />} />
         </Route>
