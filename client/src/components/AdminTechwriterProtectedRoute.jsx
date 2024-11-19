@@ -6,6 +6,10 @@ const AdminTechwriterProtectedRoute = ({ allowedRoles = [], children }) => {
   const { isLoggedIn, userRole } = useSelector((state) => state.auth);
   const location = useLocation(); // Get the current location
 
+  console.log("User is logged in:", isLoggedIn);
+  console.log("User role:", userRole);
+  console.log("Allowed roles:", allowedRoles);
+
   // If the user is not logged in or does not have the required role
   if (!isLoggedIn || !allowedRoles.includes(userRole)) {
     return <Navigate to="/login" state={{ from: location }} replace />;
