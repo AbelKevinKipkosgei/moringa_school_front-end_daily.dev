@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Navbar from "./components/Navbar";
 import Admin from "./pages/Admin";
 import FeedPage from "./pages/FeedPage";
@@ -14,37 +15,54 @@ import UnauthorizedPage from "./pages/UnauthorizedPage";
 import ManageUser from "./components/ManageUser"
 import ManageCategory from "./components/ManageCategory";
 
+
+
 function App() {
+  const { isLoggedIn, userRole } = useSelector((state) => state.auth);
+
   return (
     <Router>
       <Navbar />
       <Routes>
+        
         <Route path="/feed" element={<FeedPage />} />
         <Route path="/post/:postId" element={<PostPage />} />
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/unauthorized" component={UnauthorizedPage} />
+        <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
         {/* Admin Route */}
-        <Route path="/admin/*" element={<Admin />}>
+        <Route
+          path="/Admin/*"
+          element={
+            <AdminTechwriterProtectedRoute
+              isLoggedIn={isLoggedIn}
+              userRole={userRole}  
+              allowedRoles={["admin"]}
+            >
+              <Admin />
+            </AdminTechwriterProtectedRoute>
+          }
+        >
           <Route path="manageusers" element={<ManageUser />} />
           <Route path="managecategory" element={<ManageCategory />} />
           <Route path="approvedposts" element={<ApprovedPosts />} />
           <Route path="flaggedposts" element={<FlaggedPosts />} />
         </Route>
 
-        {/* Techwriter Protected Route with Nested Routes */}
+        {/* Techwriter Route */}
         <Route
           path="/techwriter/*"
           element={
             <AdminTechwriterProtectedRoute
+              isLoggedIn={isLoggedIn}
+              userRole={userRole}  
               allowedRoles={["techwriter", "admin"]}
             >
               <Techwriter />
             </AdminTechwriterProtectedRoute>
           }
         >
-          {/* Nested routes inside Techwriter */}
           <Route path="manageposts" element={<ManagePosts />} />
           <Route path="flaggedposts" element={<FlaggedPosts />} />
           <Route path="approvedposts" element={<ApprovedPosts />} />
