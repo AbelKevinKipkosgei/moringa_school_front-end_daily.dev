@@ -50,6 +50,16 @@ const authSlice = createSlice({
   },
 });
 
-export const {login, logout, refreshToken, signupStart, signupSuccess, signupFailure } = authSlice.actions;
+export const {
+  login,
+  logout,
+  refreshToken,
+  signupStart,
+  signupSuccess,
+  signupFailure,
+} = authSlice.actions;
+
+// Selector to get user role from Redux state
+export const selectUserRole = (state) => state.auth.userRole;
 
 export default authSlice.reducer;
