@@ -11,6 +11,8 @@ import FlaggedPosts from "./components/FlaggedPosts";
 import ApprovedPosts from "./components/ApprovedPosts";
 import PostPage from "./pages/PostPage";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
+import ManageUser from "./components/ManageUser"
+import ManageCategory from "./components/ManageCategory";
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
 
         {/* Admin Route */}
         <Route path="/admin/*" element={<Admin />}>
+          <Route path="manageusers" element={<ManageUser />} />
+          <Route path="managecategory" element={<ManageCategory />} />
           <Route path="approvedposts" element={<ApprovedPosts />} />
           <Route path="flaggedposts" element={<FlaggedPosts />} />
         </Route>
