@@ -81,6 +81,31 @@ audio {
   background: rgba(0, 0, 0, 0.8);
 }
 
+/* Post Action Buttons (Like, Wishlist, Reply) */
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.post-action-btn {
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: #fff;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.post-action-btn:hover {
+  background-color: #2980b9;
+}
+
+.post-action-btn:active {
+  background-color: #1c6fa1;
+}
+
 /* Comments Section */
 .comments-section {
   margin-top: 30px;
@@ -97,6 +122,8 @@ audio {
   margin-bottom: 20px;
   padding-bottom: 10px;
   border-bottom: 1px solid #e1e1e1;
+  padding-left: 10px;  /* Indentation for replies */
+  position: relative;
 }
 
 .comment-header {
@@ -120,12 +147,103 @@ audio {
 .comment-body {
   font-size: 1rem;
   color: #333;
+  margin: 10px 0;
 }
 
 .comment-meta {
   font-size: 0.9rem;
   color: #777;
   text-align: right;
+}
+
+.comment-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.comment-action-btn {
+  color: #3498db;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  margin-right: 15px;
+}
+
+.comment-action-btn:hover {
+  color: #2980b9;
+}
+
+.replies-section {
+  margin-top: 15px;
+  padding-left: 20px; /* Indentation for replies */
+  border-left: 2px solid #e1e1e1;
+}
+
+.replies-section .reply {
+  margin-bottom: 10px;
+  padding-left: 15px; /* Extra padding for a deeper nested reply */
+}
+
+.reply-item {
+  margin-bottom: 15px;
+}
+
+.reply-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.reply-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.reply-username {
+  font-weight: bold;
+  color: #333;
+}
+
+.reply-body {
+  font-size: 1rem;
+  color: #333;
+  margin: 5px 0;
+}
+
+.reply-meta {
+  font-size: 0.85rem;
+  color: #777;
+  text-align: right;
+}
+
+.reply-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+
+/* Reply button style */
+.reply-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.reply-button:hover {
+  background-color: #2980b9;
+}
+
+.reply-button:active {
+  background-color: #1c6fa1;
 }
 
 /* Responsive Design for Mobile */
