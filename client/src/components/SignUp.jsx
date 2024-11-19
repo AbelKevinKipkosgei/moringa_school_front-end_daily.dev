@@ -2,11 +2,7 @@ import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
-import {
-  signupStart,
-  signupSuccess,
-  signupFailure,
-} from "../slices/signUpSlice";
+import { signupStart, signupSuccess, signupFailure } from "../slices/authSlice"; // Import from authSlice
 import "../styles/SignUp.css";
 
 const SignUp = () => {
@@ -50,7 +46,7 @@ const SignUp = () => {
     }),
     onSubmit: async (values) => {
       setLoading(true);
-      dispatch(signupStart());
+      dispatch(signupStart()); // Dispatch signupStart from authSlice
 
       try {
         const formData = new FormData();
@@ -75,7 +71,7 @@ const SignUp = () => {
           }
         } else {
           const data = await response.json();
-          dispatch(signupSuccess(data));
+          dispatch(signupSuccess(data)); // Dispatch signupSuccess from authSlice
           alert("Sign-up successful!");
           formik.resetForm();
 
@@ -84,7 +80,7 @@ const SignUp = () => {
         }
       } catch (error) {
         // Handle any errors
-        dispatch(signupFailure(error.message));
+        dispatch(signupFailure(error.message)); // Dispatch signupFailure from authSlice
         alert(error.message);
       } finally {
         setLoading(false);

@@ -1,17 +1,25 @@
 import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { loginStart, loginSuccess, loginFailure } from "../slices/signUpSlice";
+import { useEffect } from "react";
+import { login } from "../slices/authSlice"; // Import the login action from authSlice
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux"; // To check login status
 import "../styles/LogIn.css";
-import { useState } from "react"; // Import useState
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // Local state to track loading state for the login process
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  // Check if the user is already logged in via Redux state
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
-  // Formik setup for login form
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/feed"); // Redirect to the feed if the user is already logged in
+    }
+  }, [isLoggedIn, navigate]);
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -24,10 +32,6 @@ const Login = () => {
         .required("Password is required"),
     }),
     onSubmit: async (values) => {
-      setIsLoggingIn(true); // Set loading state to true when submitting
-
-      dispatch(loginStart());
-
       try {
         const response = await fetch("/api/login", {
           method: "POST",
@@ -41,25 +45,23 @@ const Login = () => {
         });
 
         if (!response.ok) {
-          // Handle specific error for email not found
           const errorData = await response.json();
-          if (errorData.message === "Invalid credentials") {
-            throw new Error("Invalid credentials");
-          }
-          throw new Error("Login failed");
+          throw new Error(errorData.message || "Login failed");
         }
 
         const data = await response.json();
-        dispatch(loginSuccess(data)); // Handle user data or token
+        const { token, role } = data;
 
-        // Reset the form on successful login
+        // Dispatch login action
+        dispatch(login({ token, role }));
+
+        // Redirect to feed after successful login
+        navigate("/feed");
+
+        // Reset form
         formik.resetForm();
-        alert("Login successful!");
       } catch (error) {
-        dispatch(loginFailure(error.message)); // Handle error
         alert(error.message);
-      } finally {
-        setIsLoggingIn(false); // Reset loading state
       }
     },
   });
@@ -100,9 +102,8 @@ const Login = () => {
           )}
         </div>
 
-        <button type="submit" className="submit-button" disabled={isLoggingIn}>
-          {isLoggingIn ? "Logging in..." : "Login"}{" "}
-          {/* Conditional button text */}
+        <button type="submit" className="submit-button">
+          Login
         </button>
       </form>
     </div>
