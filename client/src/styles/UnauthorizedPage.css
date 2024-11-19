@@ -1,0 +1,31 @@
+.unauthorized-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  background-color: #f4f4f4;
+}
+
+.unauthorized-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.unauthorized-message {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.unauthorized-link {
+  font-size: 1.1rem;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.unauthorized-link:hover {
+  text-decoration: underline;
+}

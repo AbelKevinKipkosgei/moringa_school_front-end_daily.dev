@@ -54,6 +54,15 @@ const Post = () => {
         <p>
           <strong>Wishlist Count:</strong> {post.wishlist_count}
         </p>
+        <p>
+          <strong>Likes:</strong> {post.likes_count}
+        </p>
+
+        {/* Like button */}
+        <button className="like-button">Like</button>
+
+        {/* Wishlist button */}
+        <button className="wishlist-button">Add to Wishlist</button>
 
         {/* Display Media URL (Video/Audio Player) */}
         {post.media_url && (
@@ -77,7 +86,7 @@ const Post = () => {
           <ul>
             {post.comments &&
               post.comments.map((comment) => (
-                <li key={comment.id}>
+                <li key={comment.id} className="comment-item">
                   <div className="comment-header">
                     <img
                       src={comment.user.profile_pic_url || "default-avatar.jpg"}
@@ -90,6 +99,43 @@ const Post = () => {
                   <p className="comment-meta">
                     <em>{new Date(comment.created_at).toLocaleDateString()}</em>
                   </p>
+
+                  {/* Reply button for each comment */}
+                  <button className="reply-button">Reply</button>
+
+                  {/* Display replies to the comment */}
+                  {comment.replies && comment.replies.length > 0 && (
+                    <div className="replies-section">
+                      <strong>Replies:</strong>
+                      <ul>
+                        {comment.replies.map((reply) => (
+                          <li key={reply.id} className="reply-item">
+                            <div className="reply-header">
+                              <img
+                                src={
+                                  reply.user.profile_pic_url ||
+                                  "default-avatar.jpg"
+                                }
+                                alt={reply.user.username}
+                                className="reply-avatar"
+                              />
+                              <p className="reply-username">
+                                {reply.user.username}
+                              </p>
+                            </div>
+                            <p className="reply-body">{reply.body}</p>
+                            <p className="reply-meta">
+                              <em>
+                                {new Date(
+                                  reply.created_at
+                                ).toLocaleDateString()}
+                              </em>
+                            </p>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </li>
               ))}
           </ul>

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+// import { useDispatch, } from 'react-redux';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
-import { fetchUsers } from '../slices/userSlice';
+// import { fetchUsers } from '../slices/userSlice';
 
 const ManageUser = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);  // Set loading state to true initially
@@ -46,6 +46,7 @@ const ManageUser = () => {
       setErrorMessage('Failed to decode token. Please log in again.');
       navigate('/login');
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   const handleDeactivate = (user_id) => {
