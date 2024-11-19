@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createCategory } from '../slices/categorySlice'; 
 import "../styles/ManageCategory.css"

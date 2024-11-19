@@ -1,26 +1,106 @@
+/* Navbar general styles */
 .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
   background-color: #333;
-  padding: 10px;
+  color: white;
+  font-family: 'Arial', sans-serif;
+  position: relative;
 }
 
+/* Logo or brand name */
+.navbar-logo a {
+  font-size: 1.5rem;
+  color: white;
+  text-decoration: none;
+}
+
+/* Navbar list styles */
 .navbar-list {
   display: flex;
-  justify-content: center;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 .navbar-item {
-  margin: 0 20px;
+  margin: 0 1rem;
 }
 
 .navbar-item a {
-  color: #fff;
+  color: white;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 1rem;
+  transition: color 0.3s ease;
 }
 
 .navbar-item a:hover {
-  color: #f1f1f1;
+  color: #ff6347; /* Hover color for links */
+}
+
+/* Mobile menu toggle (Hamburger) */
+.navbar-toggle {
+  display: none;
+  cursor: pointer;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.navbar-toggle.open .navbar-icon {
+  background-color: #ff6347; /* Change color when menu is open */
+}
+
+.navbar-icon,
+.navbar-icon::before,
+.navbar-icon::after {
+  content: '';
+  display: block;
+  height: 3px;
+  width: 30px;
+  background-color: white;
+  margin: 6px 0;
+  transition: all 0.3s ease;
+}
+
+.navbar-toggle.open .navbar-icon {
+  transform: rotate(45deg);
+}
+
+.navbar-toggle.open .navbar-icon::before {
+  transform: rotate(-45deg);
+  top: -9px;
+}
+
+.navbar-toggle.open .navbar-icon::after {
+  opacity: 0;
+}
+
+/* Navbar list styles when menu is open */
+.navbar-list.active {
+  display: block;
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background-color: #333;
+  width: 100%;
+  padding: 1rem;
+  border-top: 1px solid #ff6347;
+}
+
+.navbar-list.active .navbar-item {
+  margin: 1rem 0;
+}
+
+/* Desktop Styles */
+@media (min-width: 768px) {
+  .navbar-list {
+    display: flex !important;
+  }
+
+  .navbar-toggle {
+    display: none;
+  }
 }
