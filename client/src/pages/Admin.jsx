@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import "../styles/Techwriter.css";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const Admin = () => {
   const handleManageUser = () => navigate("/admin/manageusers");
   const handleApprovedPosts = () => navigate("/admin/approvedposts");
   const handleFlaggedPosts = () => navigate("/admin/flaggedposts");
-  const handleCategories = () => navigate("/admin/managecategories");
+  const handleCategory = () => navigate("/admin/managecategory");
 
   return (
     <div className="admin-page">
@@ -39,8 +40,8 @@ const Admin = () => {
             Flagged Posts
           </li>
           <li
-            className={isActive("/admin/managecategories") ? "active" : ""}
-            onClick={handleCategories}
+            className={isActive("/admin/managecategory") ? "active" : ""}
+            onClick={handleCategory}
           >
             Categories
           </li>
@@ -55,4 +56,4 @@ const Admin = () => {
   );
 };
 
-export default Admin; // Ensure default export
+export default Admin;
