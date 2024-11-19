@@ -1,0 +1,70 @@
+
+.form-container {
+    background-color: black;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+  }
+  
+  /* Title or header for the form */
+  .form-container h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    color: white; /* Changed to black for better contrast */
+  }
+  
+  /* Input field styles */
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 7px 0;
+    border: 1px solid black;
+    border-radius: 7px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background-color: white; /* Background color black */
+    color: black; /* White text color */
+  }
+  
+  /* Focus state for inputs */
+  input[type="text"]:focus {
+    border-color: black;
+    outline: none;
+  }
+  
+  /* Button styles */
+  button {
+    width: 100%;
+    padding: 12px;
+    background-color: green;
+    color: white;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  /* Hover effect for the button */
+  button:hover {
+    background-color: darkgreen; /* Changed to dark green for hover effect */
+  }
+  
+  /* Disabled button state */
+  button:disabled {
+    background-color: #d6d6d6;
+    cursor: not-allowed;
+  }
+  
+  /* Error message styling */
+  .error-message {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+  }
+  

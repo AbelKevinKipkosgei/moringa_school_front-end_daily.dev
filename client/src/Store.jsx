@@ -4,6 +4,8 @@ import postsReducer from './slices/postsSlice';
 import authReducer from "./slices/authSlice";
 import feedReducer from './slices/feedSlice';
 import postReducer from "./slices/postSlice";
+import categoryReducer from './slices/categorySlice';
+
 
 
 
@@ -14,6 +16,7 @@ const store = configureStore({
     auth: authReducer,
     feed: feedReducer,
     post: postReducer,
+    categories:categoryReducer,
   },
 });
 
