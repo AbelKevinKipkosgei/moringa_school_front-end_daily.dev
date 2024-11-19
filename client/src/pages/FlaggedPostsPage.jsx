@@ -7,3 +7,4 @@ const FlaggedPosts = () => {
         </div>
     )
 }
+export default FlaggedPosts
