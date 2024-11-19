@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import "../styles/Techwriter.css";
 
@@ -43,7 +42,7 @@ const Techwriter = () => {
 
       {/* Main Content */}
       <div className="main-content">
-        <Outlet />
+        <Outlet /> {/* Required to render nested routes */}
       </div>
     </div>
   );
