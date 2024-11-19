@@ -1,119 +1,100 @@
-import { useEffect, useState } from 'react';
-// import { useDispatch, } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
-// import { fetchUsers } from '../slices/userSlice';
+import { fetchUsers, deactivateUser, activateUser } from '../slices/userSlice';
 
 const ManageUser = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);  // Set loading state to true initially
+  const users = useSelector((state) => state.users.users);
+  const loading = useSelector((state) => state.users.loading);
   const [errorMessage, setErrorMessage] = useState(null);
-
-  const mockUsers = [
-    {
-      id: 1,
-      username: 'abel_soi',
-      email: 'abelkevinkipkosgei@gmail.com',
-      role: 'admin',
-      activated: true,
-    },
-    // Add more users here for testing
-  ];
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (!token) {
-      console.log('No token found. Redirecting to Login...');
+      setErrorMessage('No token found. Redirecting to login...');
       navigate('/login');
       return;
     }
 
     try {
       const decodedToken = jwtDecode(token);
-      console.log('Decoded Token:', decodedToken);
-
       if (decodedToken.sub.role === 'admin') {
-        // Simulating API call delay
-        setTimeout(() => {
-          setUsers(mockUsers);
-          setLoading(false); // Set loading to false once data is fetched
-        }, 1000);
+        dispatch(fetchUsers()).then((action) => {
+          if (action.payload) {
+            console.log('Fetched Users:', action.payload);
+          } else if (action.error) {
+            setErrorMessage('Error fetching users: ' + action.error.message);
+          }
+        });
       }
     } catch (err) {
       console.error('Failed to decode token:', err);
-      setErrorMessage('Failed to decode token. Please log in again.');
+      setErrorMessage('Token expired. Redirecting to login...');
       navigate('/login');
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate]);
+  }, [navigate, dispatch]);
 
   const handleDeactivate = (user_id) => {
-    setUsers(users.map(user =>
-      user.id === user_id ? { ...user, activated: false } : user
-    ));
+    dispatch(deactivateUser(user_id)).then((action) => {
+      if (action.error) {
+        setErrorMessage('Error deactivating user: ' + action.error.message);
+      }
+    });
   };
 
   const handleActivate = (user_id) => {
-    setUsers(users.map(user =>
-      user.id === user_id ? { ...user, activated: true } : user
-    ));
+    dispatch(activateUser(user_id)).then((action) => {
+      if (action.error) {
+        setErrorMessage('Error activating user: ' + action.error.message);
+      }
+    });
   };
 
   const renderUsers = () => {
     return (
-      <div className="user-card-container">
+      <div>
         <h2>All Users</h2>
         {loading ? (
           <p>Loading...</p>
         ) : (
-          <div className="user-table-container">
-            <table className="user-table">
-              <thead>
-                <tr>
-                  <th>Username</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+          <table>
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Activated</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.username}</td>
+                  <td>{user.email}</td>
+                  <td>{user.role}</td>
+                  <td>{user.activated ? 'Yes' : 'No'}</td>
+                  <td>
+                    {user.activated ? (
+                      <button onClick={() => handleDeactivate(user.id)}>Deactivate</button>
+                    ) : (
+                      <button onClick={() => handleActivate(user.id)}>Activate</button>
+                    )}
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => (
-                  <tr key={user.id}>
-                    <td>{user.username}</td>
-                    <td>{user.email}</td>
-                    <td>{user.role}</td>
-                    <td>{user.activated ? 'Activated' : 'Deactivated'}</td>
-                    <td>
-                      <button
-                        onClick={() => handleDeactivate(user.id)}
-                        disabled={!user.activated}
-                        className="deactivate-btn"
-                      >
-                        Deactivate
-                      </button>
-                      <button
-                        onClick={() => handleActivate(user.id)}
-                        disabled={user.activated}
-                        className="activate-btn"
-                      >
-                        Activate
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         )}
-        {errorMessage && <p className="error">{errorMessage}</p>}
+        {errorMessage && <p>{errorMessage}</p>}
       </div>
     );
   };
 
-  return renderUsers();
+  return <div>{renderUsers()}</div>;
 };
 
 export default ManageUser;
