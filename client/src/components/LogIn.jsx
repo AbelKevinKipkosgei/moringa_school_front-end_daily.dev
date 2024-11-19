@@ -50,10 +50,18 @@ const Login = () => {
         }
 
         const data = await response.json();
-        const { token, role } = data;
+        const { access_token, refresh_token, role, userId } = data;
 
-        // Dispatch login action
-        dispatch(login({ token, role }));
+        console.log(data)
+
+        // Dispatch login action with token, role, and userId
+        dispatch(login({ token: access_token, role, userId }));
+
+        // Optionally, store tokens and user info in localStorage
+        localStorage.setItem("authToken", access_token);
+        localStorage.setItem("refreshToken", refresh_token);
+        localStorage.setItem("userRole", role);
+        localStorage.setItem("userId", userId);
 
         // Redirect to feed after successful login
         navigate("/feed");
