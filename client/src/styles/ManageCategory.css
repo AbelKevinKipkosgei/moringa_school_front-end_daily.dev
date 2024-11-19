@@ -41,7 +41,7 @@
   button {
     width: 100%;
     padding: 12px;
-    background-color: green;
+    background-color: #007bff;
     color: white;
     font-size: 1rem;
     border: none;
@@ -52,7 +52,7 @@
   
   /* Hover effect for the button */
   button:hover {
-    background-color: darkgreen; /* Changed to dark green for hover effect */
+    background-color: #007bff;; /* Changed to dark green for hover effect */
   }
   
   /* Disabled button state */
