@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { fetchUsers, deactivateUser, activateUser } from "../slices/userSlice";
+import { useDispatch, useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import { fetchUsers, deactivateUser, activateUser } from '../slices/userSlice';
 
 const ManageUser = () => {
   const dispatch = useDispatch();
