@@ -6,12 +6,13 @@ import FeedPage from "./pages/FeedPage";
 import LogInPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
 import Techwriter from './pages/Techwriter';
-import AdminTechwriterProtectedRoute from "./components/AdminTechwriterProtectedRoute";
+// import AdminTechwriterProtectedRoute from "./compAdminTechwriterProtectedRouteonents/";
 import ManagePosts from "./components/ManagePosts";
 import FlaggedPosts from "./components/FlaggedPosts";
 import ApprovedPosts from "./components/ApprovedPosts";
 import PostPage from "./pages/PostPage";
 import ManageUser from "./components/ManageUser"
+import EditPostModal from "./components/EditPostModal"
 
 
 function App() {
@@ -29,20 +30,21 @@ function App() {
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/Admin" element={<Admin />} />
+        <Route path="/Techwriter" element={<Techwriter />} />
         
         
         
         {/* Admin Route with Nested Routes */}
-        <Route path="/admin" element={<Admin />}>
+        {/* <Route path="/admin" element={<Admin />}>
           <Route path="manageusers" element={<ManageUser />} />
           <Route path="approvedposts" element={<ApprovedPosts />} />
           <Route path="flaggedposts" element={<FlaggedPosts />} />
         </Route>
-  
+   */}
         
         
         {/* Techwriter protected route */}
-        <Route
+        {/* <Route
           path="/techwriter/*"
           element={
             <AdminTechwriterProtectedRoute
@@ -53,11 +55,11 @@ function App() {
             </AdminTechwriterProtectedRoute>
           }
         >
-          {/* Nested routes inside Techwriter */}
+          
           <Route path="manageposts" element={<ManagePosts />} />
           <Route path="flaggedposts" element={<FlaggedPosts />} />
           <Route path="approvedposts" element={<ApprovedPosts />} />
-        </Route>
+        </Route> */}
       </Routes>
     </Router>
   );
