@@ -55,8 +55,8 @@ export const deactivateUser = createAsyncThunk(
       const data = await response.json();
 
       
-      dispatch(updateUserStatus({ user_id, status: 'deactivated' }));
-      return { user_id, status: 'deactivated' };
+      
+      return { user_id };
     } catch (error) {
       return rejectWithValue(error.message || "An error occurred while deactivating the user.");
     }
@@ -81,7 +81,7 @@ export const activateUser = createAsyncThunk(
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ status: 'activated' }),
+          
         }
       );
 
@@ -92,8 +92,8 @@ export const activateUser = createAsyncThunk(
       const data = await response.json();
 
       // Return user_id to update the state later
-      dispatch(updateUserStatus({ user_id, status: 'activated' }));
-      return { user_id, status: 'activated' };
+      
+      return { user_id, activated: user.activated };
     } catch (error) {
       return rejectWithValue(error.message || "An error occurred while activating the user.");
     }
@@ -107,6 +107,7 @@ const userReducer = createSlice({
     users: [],
     loading: false,
     error: null,
+    message: null, // Add this to hold success/error messages
   },
   extraReducers: (builder) => {
     builder
@@ -123,28 +124,39 @@ const userReducer = createSlice({
         state.error = action.payload;
       })
       .addCase(deactivateUser.fulfilled, (state, action) => {
-        const { user_id, status } = action.payload;
+        const { user_id, status ,message} = action.payload;
         const updatedUsers = state.users.map((user) =>
-          user.id === user_id ? { ...user, activated: status === 'activated' } : user
+          user.id === user_id ? { ...user, activated:false } : user
         );
         state.users = updatedUsers;
-        state.message = "User deactivated successfully!";
+        state.message = message || "User deactivated successfully!";  
+
       })
       .addCase(activateUser.fulfilled, (state, action) => {
-        const { user_id, status } = action.payload;
+        const { user_id, status,message } = action.payload;
         const updatedUsers = state.users.map((user) =>
-          user.id === user_id ? { ...user, activated: status === 'activated' } : user
+          user.id === user_id ? { ...user, activated:true } : user
         );
         state.users = updatedUsers;
-        state.message = "User activated successfully!";
+        state.message = message || "User activated successfully!";
       })
       .addCase(deactivateUser.rejected, (state, action) => {
         state.message = action.payload;
       })
       .addCase(activateUser.rejected, (state, action) => {
         state.message = action.payload;
+      })
+      .addCase(updateUserStatus, (state, action) => {
+        const { user_id, status } = action.payload;
+        const updatedUsers = state.users.map((user) =>
+          user.id === user_id ? { ...user, activated: true } : user
+        );
+        state.users = updatedUsers;
       });
   },
 });
+
 export const { setMessage } = userReducer.actions;
 export default userReducer.reducer;
+
+
