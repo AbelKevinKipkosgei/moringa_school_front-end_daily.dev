@@ -2,33 +2,46 @@
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-// Define the async thunk for creating a category
+// Function to get the token from localStorage
+const getAuthToken = () => {
+  const token = localStorage.getItem("authToken");
+  if (!token) {
+    console.error("No token found in localStorage");
+    return null;
+  }
+  return token;
+};
+
+
+
 export const createCategory = createAsyncThunk(
   'categories/createCategory',
-  async (categoryData, { rejectWithValue }) => {
+  async ({name,description} ,{  rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await fetch('/api/categories/createcategory', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(categoryData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create category');
+      // Get the access token from the Redux store
+      const token = getAuthToken();
+      if (!token) {
+        return rejectWithValue('No access token found');
       }
 
-      const data = await response.json();
-      return data;  // Success - Return the category data
-    } catch (error) {
-      return rejectWithValue(error.message || 'Something went wrong'); // Return error message
-    }
-  }
-);
+     
+      const response = await fetch('http://localhost:4000/api/categories/createcategory', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+        },
+        body: JSON.stringify({ name, description }),
+      });
 
+    const data = await response.json(); 
+    console.log('API Response:', data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return rejectWithValue(error.message || 'Failed to fetch categories');
+  }
+});
 // Create the slice
 const categorySlice = createSlice({
   name: 'categories',
@@ -54,4 +67,4 @@ const categorySlice = createSlice({
   },
 });
 
-export default categorySlice.reducer; // Export the reducer to be used in the store
+export default categorySlice.reducer; 
