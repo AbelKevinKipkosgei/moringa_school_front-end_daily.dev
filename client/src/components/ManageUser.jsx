@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { fetchUsers, deactivateUser, activateUser } from '../slices/userSlice';
-
+import "../styles/ManageUser.css"
 const ManageUser = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -54,14 +54,17 @@ const ManageUser = () => {
       setMessage({ user_id, text: "Error activating user." });
     }
   };
+  useEffect(() => {
+    console.log(users); // Log the users to ensure `activated` is set correctly
+  }, [users]);
 
   return (
     <div>
-      <h2>All Users</h2>
+      <h2 className="manage-user-header">All Users</h2>
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <table>
+        <table className="manage-user-table">
           <thead>
             <tr>
               <th>Username</th>
@@ -79,30 +82,27 @@ const ManageUser = () => {
                   <td>{user.email}</td>
                   <td>{user.role}</td>
                   <td>{user.activated ? "NO" : "YES"}</td>
-                  <td>
+                  <td className="action-btns">
                     <button
                       onClick={() => handleDeactivate(user.id)}
-                      disabled={user.activated} // Disable if user is not activated
+                      disabled={user.activated}
+                      className="deactivate-btn"
                     >
-                      {user.activated ? "Activate" : "Deactivate"}
+                      Deactivate
                     </button>
-
                     <button
                       onClick={() => handleActivate(user.id)}
-                      disabled={!user.activated} // Disable if user is already activated
+                      disabled={!user.activated}
+                      className="activate-btn"
                     >
-                      {user.activated ? "Deactivate" : "Activate"}
+                      Activate
                     </button>
-
-                    {message && message.user_id === user.id && (
-                      <div className="success-message">{message.text}</div>
-                    )}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="5">No users found.</td>
+                <td colSpan="5">No users available</td>
               </tr>
             )}
           </tbody>
@@ -110,6 +110,6 @@ const ManageUser = () => {
       )}
     </div>
   );
-};
+}  
 
 export default ManageUser;
