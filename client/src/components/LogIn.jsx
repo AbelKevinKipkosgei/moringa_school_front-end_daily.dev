@@ -1,14 +1,24 @@
 import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { jwtDecode } from "jwt-decode";  
-import { login } from "../slices/authSlice"; 
+import { useEffect } from "react";
+import { login } from "../slices/authSlice"; // Import the login action from authSlice
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux"; // To check login status
 import "../styles/LogIn.css";
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // Check if the user is already logged in via Redux state
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/feed"); // Redirect to the feed if the user is already logged in
+    }
+  }, [isLoggedIn, navigate]);
 
   const formik = useFormik({
     initialValues: {
@@ -40,27 +50,21 @@ const Login = () => {
         }
 
         const data = await response.json();
-        const { access_token, refresh_token } = data;
+        const { access_token, refresh_token, role, userId } = data;
 
-        // Decode the token to get the role
-        const decodedToken = jwtDecode(access_token);  
-        console.log("Decoded Token:", decodedToken);
+        console.log(data)
 
-        // Extract the role and id 
-        const { role, id: userId } = decodedToken.sub;
-
-        
+        // Dispatch login action with token, role, and userId
         dispatch(login({ token: access_token, role, userId }));
 
-        if (role === "admin") {
-          navigate("/admin");
-        } else if (role === "techwriter") {
-          navigate("/techwriter");
-        } else if (role === "user") {
-          navigate("/feed");  
-        } else {
-          alert("Unauthorized role");
-        }
+        // Optionally, store tokens and user info in localStorage
+        localStorage.setItem("authToken", access_token);
+        localStorage.setItem("refreshToken", refresh_token);
+        localStorage.setItem("userRole", role);
+        localStorage.setItem("userId", userId);
+
+        // Redirect to feed after successful login
+        navigate("/feed");
 
         // Reset form
         formik.resetForm();
