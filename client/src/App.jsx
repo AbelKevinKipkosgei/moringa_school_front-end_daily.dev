@@ -7,6 +7,7 @@ import LogInPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
 import Techwriter from "./pages/Techwriter";
 import AdminTechwriterProtectedRoute from "./components/AdminTechwriterProtectedRoute";
+import AdminProtectedRoute from "./components/AdminProtectedRoute"
 import ManagePosts from "./components/ManagePosts";
 import FlaggedPosts from "./components/FlaggedPosts";
 import ApprovedPosts from "./components/ApprovedPosts";
@@ -35,13 +36,13 @@ function App() {
         <Route
           path="/Admin/*"
           element={
-            <AdminTechwriterProtectedRoute
+            <AdminProtectedRoute
               isLoggedIn={isLoggedIn}
               userRole={userRole}  
               allowedRoles={["admin"]}
             >
               <Admin />
-            </AdminTechwriterProtectedRoute>
+            </AdminProtectedRoute>
           }
         >
           <Route path="manageusers" element={<ManageUser />} />

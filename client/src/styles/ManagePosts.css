@@ -1,0 +1,48 @@
+.edit-button {
+    background-color: #f0ad4e;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .approve-button {
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .flag-button {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .post-card {
+    border: 1px solid #ddd;
+    margin: 10px 0;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .post-thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+  
+  .post-details {
+    flex-grow: 1;
+  }
+  
+  .post-actions {
+    display: flex;
+    gap: 10px;
+  }
+  

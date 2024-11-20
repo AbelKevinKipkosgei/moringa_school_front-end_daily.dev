@@ -10,91 +10,106 @@ const ManageUser = () => {
   const users = useSelector((state) => state.users.users);
   const loading = useSelector((state) => state.users.loading);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [message, setMessage] = useState(""); 
 
-  useEffect(() => {
-    const token = localStorage.getItem('access_token');
+  // Function to get the token from localStorage
+  const getAuthToken = () => {
+    const token = localStorage.getItem("authToken");
     if (!token) {
-      setErrorMessage('No token found. Redirecting to login...');
-      navigate('/login');
-      return;
+      console.error("No token found in localStorage");
+      setErrorMessage("No access token found. Redirecting...");
+      setTimeout(() => navigate("/login"), 3000); // Redirect to login after 3 seconds
     }
+    return token;
+  };
 
+  // Fetch users 
+  useEffect(() => {
+    const token = getAuthToken();
+    if (token) {
+      dispatch(fetchUsers(token)).catch((err) =>
+        setErrorMessage("Failed to fetch users: " + err.message)
+      );
+    }
+  }, [dispatch, navigate]);
+
+  const handleDeactivate = async (user_id) => {
     try {
-      const decodedToken = jwtDecode(token);
-      if (decodedToken.sub.role === 'admin') {
-        dispatch(fetchUsers()).then((action) => {
-          if (action.payload) {
-            console.log('Fetched Users:', action.payload);
-          } else if (action.error) {
-            setErrorMessage('Error fetching users: ' + action.error.message);
-          }
-        });
+      const response = await dispatch(deactivateUser(user_id)); 
+      if (response.meta.requestStatus === "fulfilled") {
+        setMessage({ user_id, text: "Successfully deactivated!" });
       }
-    } catch (err) {
-      console.error('Failed to decode token:', err);
-      setErrorMessage('Token expired. Redirecting to login...');
-      navigate('/login');
+    } catch (error) {
+      setMessage({ user_id, text: "Error deactivating user." });
     }
-  }, [navigate, dispatch]);
-
-  const handleDeactivate = (user_id) => {
-    dispatch(deactivateUser(user_id)).then((action) => {
-      if (action.error) {
-        setErrorMessage('Error deactivating user: ' + action.error.message);
-      }
-    });
   };
 
-  const handleActivate = (user_id) => {
-    dispatch(activateUser(user_id)).then((action) => {
-      if (action.error) {
-        setErrorMessage('Error activating user: ' + action.error.message);
+  const handleActivate = async (user_id) => {
+    try {
+      const response = await dispatch(activateUser(user_id)); 
+      if (response.meta.requestStatus === "fulfilled") {
+        setMessage({ user_id, text: "Successfully activated!" });
       }
-    });
+    } catch (error) {
+      setMessage({ user_id, text: "Error activating user." });
+    }
   };
 
-  const renderUsers = () => {
-    return (
-      <div>
-        <h2>All Users</h2>
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Activated</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
+  return (
+    <div>
+      <h2>All Users</h2>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Activated</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users && users.length > 0 ? (
+              users.map((user) => (
                 <tr key={user.id}>
                   <td>{user.username}</td>
                   <td>{user.email}</td>
                   <td>{user.role}</td>
-                  <td>{user.activated ? 'Yes' : 'No'}</td>
+                  <td>{user.activated ? "NO" : "YES"}</td>
                   <td>
-                    {user.activated ? (
-                      <button onClick={() => handleDeactivate(user.id)}>Deactivate</button>
-                    ) : (
-                      <button onClick={() => handleActivate(user.id)}>Activate</button>
+                    <button
+                      onClick={() => handleDeactivate(user.id)}
+                      disabled={user.activated} // Disable if user is not activated
+                    >
+                      {user.activated ? "Activate" : "Deactivate"}
+                    </button>
+
+                    <button
+                      onClick={() => handleActivate(user.id)}
+                      disabled={!user.activated} // Disable if user is already activated
+                    >
+                      {user.activated ? "Deactivate" : "Activate"}
+                    </button>
+
+                    {message && message.user_id === user.id && (
+                      <div className="success-message">{message.text}</div>
                     )}
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-        {errorMessage && <p>{errorMessage}</p>}
-      </div>
-    );
-  };
-
-  return <div>{renderUsers()}</div>;
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5">No users found.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
 };
 
 export default ManageUser;
