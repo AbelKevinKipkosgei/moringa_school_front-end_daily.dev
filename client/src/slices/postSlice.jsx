@@ -1,4 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+// Function to get the token from localStorage or Redux store
+const getAuthToken = () => {
+  const token = localStorage.getItem("authToken");
+  if (!token) {
+    console.error("No token found in localStorage");
+    return null; // Return null if no token is found
+  }
+  return token; // Return the token if it exists
+};
 
 // Initial state for the post slice
 const initialState = {
@@ -7,36 +17,186 @@ const initialState = {
   error: null,
 };
 
-// Create the slice with reducers and actions
+// Fetch a post by ID
+export const fetchPostById = createAsyncThunk(
+  "post/fetchById",
+  async (postId, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const response = await fetch(`/api/post/read/${postId}`, {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      });
+      if (!response.ok) throw new Error("Failed to fetch post");
+      const data = await response.json();
+      return data.post;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Toggle like/unlike a post
+export const toggleLikePostThunk = createAsyncThunk(
+  "post/toggleLikePost",
+  async ({ postId }, { rejectWithValue }) => {
+    try {
+      // Ensure postId is present
+      if (!postId) {
+        return rejectWithValue("Post ID is required");
+      }
+
+      const token = getAuthToken(); // Retrieve the JWT token
+      const url = `/api/post/likeunlike/${postId}`; // Backend route
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "", // Include token if available
+        },
+      });
+
+      // Check if response is not OK
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to toggle like status");
+      }
+
+      // Parse JSON response
+      const data = await response.json();
+
+      // Ensure backend returns the expected structure
+      if (!data || typeof data.isLiked === "undefined") {
+        throw new Error("Invalid response from server");
+      }
+
+      // Return postId and new like status
+      return { postId, isLiked: data.isLiked };
+    } catch (error) {
+      // Reject with detailed error message
+      return rejectWithValue(error.message || "An error occurred");
+    }
+  }
+);
+
+
+// Toggle add/remove post to/from wishlist
+export const toggleWishlistPostThunk = createAsyncThunk(
+  "post/toggleWishlistPost",
+  async ({ postId }, { rejectWithValue }) => {
+    try {
+      // Ensure postId is present
+      if (!postId) {
+        return rejectWithValue("Post ID is required");
+      }
+
+      const token = getAuthToken(); // Retrieve the JWT token
+      const url = `/api/post/wishlisttoggle/${postId}`; // Backend route
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "", // Include token if available
+        },
+      });
+
+      // Check if response is not OK
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to toggle wishlist status");
+      }
+
+      // Parse JSON response
+      const data = await response.json();
+
+      // Ensure backend returns the expected structure
+      if (!data || typeof data.isInWishlist === "undefined") {
+        throw new Error("Invalid response from server");
+      }
+
+      // Return postId and new wishlist status
+      return { postId, isInWishlist: data.isInWishlist };
+    } catch (error) {
+      // Reject with detailed error message
+      return rejectWithValue(error.message || "An error occurred");
+    }
+  }
+);
+
+
+// Add a comment to a post
+export const addCommentThunk = createAsyncThunk(
+  "post/addComment",
+  async ({ postId, body }, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const response = await fetch(`/api/post/comment/${postId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: JSON.stringify({ body }),
+      });
+
+      if (!response.ok) throw new Error("Failed to add comment");
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Add a reply to a comment
+export const addReplyThunk = createAsyncThunk(
+  "post/addReply",
+  async ({ commentId, body }, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const response = await fetch(`/api/comments/${commentId}/reply`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: JSON.stringify({ body }),
+      });
+
+      if (!response.ok) throw new Error("Failed to add reply");
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Create the slice
 const postSlice = createSlice({
   name: "post",
   initialState,
   reducers: {
-    fetchPostStart(state) {
-      state.isLoading = true;
-      state.error = null;
-    },
-    fetchPostSuccess(state, action) {
-      state.isLoading = false;
-      state.post = action.payload;
-    },
-    fetchPostFailure(state, action) {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
+    // Local reducers to handle direct state changes
     likePost(state, action) {
       if (state.post) {
         state.post.likes_count = action.payload.likes_count;
+        state.post.isLiked = action.payload.isLiked;
+      }
+    },
+    unlikePost(state, action) {
+      if (state.post) {
+        state.post.likes_count = action.payload.likes_count;
+        state.post.isLiked = action.payload.isLiked;
       }
     },
     wishlistPost(state, action) {
       if (state.post) {
-        // Toggle wishlist count only if state.post exists
-        if (action.payload.isAdded) {
-          state.post.wishlist_count += 1;
-        } else {
-          state.post.wishlist_count -= 1;
-        }
+        state.post.wishlist_count = action.payload.wishlist_count;
+        state.post.isInWishlist = action.payload.isInWishlist;
       }
     },
     addComment(state, action) {
@@ -55,132 +215,93 @@ const postSlice = createSlice({
       }
     },
   },
+  extraReducers: (builder) => {
+    builder
+      // Fetch post
+      .addCase(fetchPostById.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchPostById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.post = action.payload;
+      })
+      .addCase(fetchPostById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      // Toggle like/unlike post
+      .addCase(toggleLikePostThunk.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(toggleLikePostThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        // Update the post's like information
+        if (state.post) {
+          state.post.likes_count = action.payload.likes_count;
+          state.post.isLiked = action.payload.isLiked;
+        }
+      })
+      .addCase(toggleLikePostThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      // Wishlist post
+      .addCase(toggleWishlistPostThunk.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(toggleWishlistPostThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        // Update the post's wishlist information
+        if (state.post) {
+          state.post.wishlist_count = action.payload.wishlist_count;
+          state.post.isInWishlist = action.payload.isInWishlist;
+        }
+      })
+      .addCase(toggleWishlistPostThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      // Add comment
+      .addCase(addCommentThunk.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(addCommentThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        if (state.post) {
+          state.post.comments.push(action.payload);
+        }
+      })
+      .addCase(addCommentThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      // Add reply
+      .addCase(addReplyThunk.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(addReplyThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        if (state.post) {
+          const comment = state.post.comments.find(
+            (c) => c.id === action.payload.parent_comment_id
+          );
+          if (comment) {
+            comment.replies.push(action.payload);
+          }
+        }
+      })
+      .addCase(addReplyThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
+  },
 });
 
-// Export actions
-export const {
-  fetchPostStart,
-  fetchPostSuccess,
-  fetchPostFailure,
-  likePost,
-  wishlistPost,
-  addComment,
-  addReply,
-} = postSlice.actions;
-
-// Export the reducer
+export const { likePost, unlikePost, wishlistPost, addComment, addReply } =
+  postSlice.actions;
 export default postSlice.reducer;
-
-// Thunk to fetch post by ID
-export const fetchPostById = (postId) => async (dispatch) => {
-  try {
-    dispatch(fetchPostStart());
-
-    const response = await fetch(`/api/post/read/${postId}`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch post");
-    }
-
-    const data = await response.json();
-    dispatch(fetchPostSuccess(data.post));
-  } catch (error) {
-    dispatch(fetchPostFailure(error.message));
-  }
-};
-
-// Thunk to like a post
-export const likePostThunk = (postId) => async (dispatch) => {
-  try {
-    const response = await fetch(`/api/post/like/${postId}`, {
-      method: "POST",
-    });
-    if (!response.ok) {
-      throw new Error("Failed to like post");
-    }
-    const data = await response.json();
-    dispatch(likePost(data));
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-// Thunk to add/remove post to/from wishlist
-export const wishlistPostThunk =
-  (postId, isAdding) => async (dispatch, getState) => {
-    try {
-      const state = getState();
-      const post = state.post.post;
-
-      if (!post) {
-        throw new Error("Post not found");
-      }
-
-      if (isAdding) {
-        const response = await fetch(
-          `/api/post/addtowishlist/${postId}`,
-          {
-            method: "POST",
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to add post to wishlist");
-        }
-
-        dispatch(wishlistPost({ isAdded: true }));
-      } else {
-        if (post.wishlist_count > 0) {
-          const response = await fetch(`/api/post/removefromwishlist/${postId}`, {
-            method: "DELETE",
-          });
-
-          if (!response.ok) {
-            throw new Error("Failed to remove post from wishlist");
-          }
-
-          dispatch(wishlistPost({ isAdded: false }));
-        } else {
-          throw new Error("Post is not in wishlist");
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      // You could dispatch a failure action here to handle errors globally.
-    }
-  };
-
-// Thunk to add a comment
-export const addCommentThunk = (postId, body) => async (dispatch) => {
-  try {
-    const response = await fetch(`/api/post/comment/${postId}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ body }),
-    });
-    if (!response.ok) {
-      throw new Error("Failed to add comment");
-    }
-    const data = await response.json();
-    dispatch(addComment(data));
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-// Thunk to add a reply
-export const addReplyThunk = (commentId, body) => async (dispatch) => {
-  try {
-    const response = await fetch(`/api/comments/${commentId}/reply`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ body }),
-    });
-    if (!response.ok) {
-      throw new Error("Failed to add reply");
-    }
-    const data = await response.json();
-    dispatch(addReply(data));
-  } catch (error) {
-    console.error(error);
-  }
-};
