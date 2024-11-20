@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { approvePost, setApprovedPosts, setLoading, setError } from '../slices/approvalSlice';
 import { flagPost } from '../slices/flaggingSlice';
 import { useNavigate } from 'react-router-dom';
+import "../styles/ApprovedPosts.css"
 
 const ApprovedPosts = () => {
   const dispatch = useDispatch();
@@ -74,38 +75,38 @@ const ApprovedPosts = () => {
 
   // Render all posts
   return (
-    <div>
-      <h2>All Posts</h2>
-      <ul>
-        {approvedPosts.map((post) => (
-          <li key={post.id}>
-            <strong>{post.title}</strong><br />
-            <img src={post.thumbnail_url} alt={post.title} width="100" />
-            <p>{post.body}</p>
-            <small>{post.approved ? 'Approved' : 'Pending'}</small><br />
+    
+    <div className="approved-posts-list">
+      <h2 className="approved-posts-title">Approved Posts</h2>
+      {approvedPosts.map((post) => (
+        <div className="approved-post-card" key={post.id}>
+          <h3>{post.title}</h3>
+          <img src={post.thumbnail_url} alt={post.title} />
+          <p>{post.body}</p>
+          <div className="approved-post-info">
+            <small>{post.approved ? 'Approved' : 'Pending'}</small>
+            <br />
             <small>{post.flagged ? 'Flagged' : 'Not Flagged'}</small>
-
-            <div>
-              {!post.approved && (
-                <button onClick={() => handleApprove(post.id)}>Approve</button>
-              )}
-              <button onClick={() => handleFlag(post.id)}>Flag</button>
-            </div>
-
-            {/* Show reason input box when post is being flagged */}
-            {flaggedPostId === post.id && (
-              <div>
-                <textarea
-                  placeholder="Provide reason for flagging"
-                  value={reason}
-                  onChange={(e) => setReason(e.target.value)}
-                />
-                <button onClick={handleSubmitFlag}>Submit Flag</button>
-              </div>
+          </div>
+          <div>
+            {!post.approved && (
+              <button onClick={() => handleApprove(post.id)}>Approve</button>
             )}
-          </li>
-        ))}
-      </ul>
+            <button onClick={() => handleFlag(post.id)}>Flag</button>
+          </div>
+
+          {flaggedPostId === post.id && (
+            <div className="flagging-reason">
+              <textarea
+                placeholder="Provide reason for flagging"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+              />
+              <button onClick={handleSubmitFlag}>Submit Flag</button>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 };
