@@ -1,29 +1,19 @@
 // approvalSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 
 // Approve a post
 export const approvePost = createAsyncThunk(
-  'posts/approvePost',
+  'approvals/approvePost',
   async (postId, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(`http://127.0.0.1:5555/api/admin/approvepost`, { postId });
-      return { postId, approved: response.data.approved };
+      const response = await fetch(`http://127.0.0.1:5555/api/posts/approve/${postId}`);
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+      const data = await response.json();
+      return { postId, approved: data.approved }; // Return postId and approval status
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
-
-// Reject a post
-export const rejectPost = createAsyncThunk(
-  'posts/rejectPost',
-  async (postId, { rejectWithValue }) => {
-    try {
-      const response = await axios.patch(`http://127.0.0.1:5555/api/admin/rejectpost`, { postId });
-      return { postId, approved: response.data.approved };
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(error.message); // Return error message
     }
   }
 );
@@ -31,11 +21,21 @@ export const rejectPost = createAsyncThunk(
 const approvalSlice = createSlice({
   name: 'approvals',
   initialState: {
-    posts: [],
+    approvedPosts: [],
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    setApprovedPosts: (state, action) => {
+      state.approvedPosts = action.payload;
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(approvePost.pending, (state) => {
@@ -44,19 +44,16 @@ const approvalSlice = createSlice({
       })
       .addCase(approvePost.fulfilled, (state, action) => {
         state.loading = false;
-        const post = state.posts.find((p) => p.id === action.payload.postId);
-        if (post) post.approved = action.payload.approved;
+        const post = state.approvedPosts.find((p) => p.id === action.payload.postId);
+        if (post) post.approved = action.payload.approved; // Mark post as approved
       })
       .addCase(approvePost.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      })
-      .addCase(rejectPost.fulfilled, (state, action) => {
-        const post = state.posts.find((p) => p.id === action.payload.postId);
-        if (post) post.approved = action.payload.approved;
       });
   },
 });
 
+export const { setApprovedPosts, setLoading, setError } = approvalSlice.actions; 
 export const approvalReducer = approvalSlice.reducer;
 export default approvalReducer;

@@ -1,3 +1,4 @@
+
 // import React from "react";
 // import { useNavigate, Outlet, useLocation } from "react-router-dom";
 // import "../styles/Techwriter.css";
@@ -54,6 +55,9 @@
 
 import React, { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
+
 import "../styles/Techwriter.css";
 
 // Mock component for Manage Posts
@@ -102,6 +106,7 @@ const Techwriter = () => {
 
       {/* Main Content */}
       <div className="main-content">
+
         {activeTab === "manageposts" && <ManagePosts />}
         {activeTab === "approvedposts" && (
           <div className="approved-posts">Approved Posts</div>
@@ -109,6 +114,9 @@ const Techwriter = () => {
         {activeTab === "flaggedposts" && (
           <div className="flagged-posts">Flagged Posts</div>
         )}
+
+        <Outlet /> {/* Required to render nested routes */}
+
       </div>
     </div>
   );
