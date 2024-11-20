@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { approvePost, setApprovedPosts, setLoading, setError } from '../slices/approvalSlice';
 import { flagPost } from '../slices/flaggingSlice';
@@ -6,31 +6,34 @@ import { useNavigate } from 'react-router-dom';
 
 const ApprovedPosts = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Import useNavigate for navigation
+  const navigate = useNavigate();
+
+  // State to manage the reason for flagging and the post being flagged
+  const [reason, setReason] = useState('');
+  const [flaggedPostId, setFlaggedPostId] = useState(null);
 
   // Fetching posts from Redux state
   const { approvedPosts, loading, error } = useSelector((state) => state.approvals);
 
   // Log the state to debug
-  console.log("Approved Posts in state:", approvedPosts);
+  console.log('Approved Posts in state:', approvedPosts);
 
-  // Fetch posts on mount
+  // Fetch posts 
   useEffect(() => {
     const fetchPosts = async () => {
-      dispatch(setLoading(true)); // Set loading state
+      dispatch(setLoading(true));
       try {
         const response = await fetch('http://127.0.0.1:5555/api/allposts');
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
         const data = await response.json();
-        console.log("Fetched posts:", data);
-
-        dispatch(setApprovedPosts(data.posts)); 
+        console.log('Fetched posts:', data);
+        dispatch(setApprovedPosts(data.posts));
       } catch (err) {
-        dispatch(setError(err.message)); // Handle error
+        dispatch(setError(err.message));
       } finally {
-        dispatch(setLoading(false)); // Set loading to false when finished
+        dispatch(setLoading(false));
       }
     };
 
@@ -40,27 +43,34 @@ const ApprovedPosts = () => {
   // Loading state
   if (loading) return <p>Loading posts...</p>;
 
-  // Error state with a more user-friendly message
-  if (error) return <p>Oops, something went wrong while fetching posts. Please try again later.</p>;
+  
+  if (error) return <p>Error.</p>;
 
-  // Handle no posts or wrong data structure
+  // To Handle no posts or wrong data structure
   if (!approvedPosts || !Array.isArray(approvedPosts) || approvedPosts.length === 0) {
     return <div>No posts available.</div>;
   }
 
-  // Approve or flag post
+  // Handle approve post
   const handleApprove = (post_id) => {
-    dispatch(approvePost(post_id)); // Dispatch approve action
+    dispatch(approvePost(post_id)); 
   };
 
+  // Handle flag post
   const handleFlag = (post_id) => {
-    // Pass only the post_id to the flagPost action
-    dispatch(flagPost(post_id)).then(() => {
-      navigate('/admin/flaggedposts'); // Redirect to flagged posts page after flagging
+    setFlaggedPostId(post_id); 
+  };
+
+  // Submit the flag action
+  const handleSubmitFlag = () => {
+    if (!reason) {
+      alert('Please provide a reason for flagging the post');
+      return;
+    }
+    dispatch(flagPost({ post_id: flaggedPostId, reason })).then(() => {
+      navigate('/admin/flaggedposts'); // Navigate to flagged posts page after flagging
     });
   };
-  
-
 
   // Render all posts
   return (
@@ -70,17 +80,29 @@ const ApprovedPosts = () => {
         {approvedPosts.map((post) => (
           <li key={post.id}>
             <strong>{post.title}</strong><br />
-            <img src={post.thumbnail_url} alt={post.title} width="100" /> {/* Thumbnail image */}
+            <img src={post.thumbnail_url} alt={post.title} width="100" />
             <p>{post.body}</p>
-            <small>{post.approved ? 'Approved' : 'Pending'}</small><p>{post.flagged ? 'Flagged' : 'Not Flagged'}</p>
-            
-            {/* Show action buttons for admin or tech writer */}
+            <small>{post.approved ? 'Approved' : 'Pending'}</small><br />
+            <small>{post.flagged ? 'Flagged' : 'Not Flagged'}</small>
+
             <div>
               {!post.approved && (
                 <button onClick={() => handleApprove(post.id)}>Approve</button>
               )}
               <button onClick={() => handleFlag(post.id)}>Flag</button>
             </div>
+
+            {/* Show reason input box when post is being flagged */}
+            {flaggedPostId === post.id && (
+              <div>
+                <textarea
+                  placeholder="Provide reason for flagging"
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                />
+                <button onClick={handleSubmitFlag}>Submit Flag</button>
+              </div>
+            )}
           </li>
         ))}
       </ul>
