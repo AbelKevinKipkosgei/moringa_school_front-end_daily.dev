@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { login } from "../slices/authSlice"; // Import the login action from authSlice
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux"; // To check login status
@@ -20,6 +20,8 @@ const Login = () => {
     }
   }, [isLoggedIn, navigate]);
 
+  const [loading, setLoading] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -32,6 +34,7 @@ const Login = () => {
         .required("Password is required"),
     }),
     onSubmit: async (values) => {
+      setLoading(true);
       try {
         const response = await fetch("/api/login", {
           method: "POST",
@@ -46,12 +49,13 @@ const Login = () => {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || "Login failed");
+          throw new Error(
+            errorData.message || "An error occurred during login"
+          );
         }
 
         const data = await response.json();
         const { access_token, refresh_token, role, userId } = data;
-
         console.log(data)
 
         // Dispatch login action with token, role, and userId
@@ -70,6 +74,8 @@ const Login = () => {
         formik.resetForm();
       } catch (error) {
         alert(error.message);
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -110,8 +116,8 @@ const Login = () => {
           )}
         </div>
 
-        <button type="submit" className="submit-button">
-          Login
+        <button type="submit" className="submit-button" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>
