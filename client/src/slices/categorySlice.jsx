@@ -18,7 +18,7 @@ export const createCategory = createAsyncThunk(
   'categories/createCategory',
   async ({name,description} ,{  rejectWithValue }) => {
     try {
-      // Get the access token from the Redux store
+      
       const token = getAuthToken();
       if (!token) {
         return rejectWithValue('No access token found');
@@ -29,7 +29,7 @@ export const createCategory = createAsyncThunk(
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+          'Authorization': `Bearer ${token}`, 
         },
         body: JSON.stringify({ name, description }),
       });
@@ -49,6 +49,7 @@ const categorySlice = createSlice({
     categories: [],
     loading: false,
     error: null,
+    success: false,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -59,10 +60,12 @@ const categorySlice = createSlice({
       .addCase(createCategory.fulfilled, (state, action) => {
         state.loading = false; // Set loading state to false
         state.categories.push(action.payload); // Add new category to the state
+        state.success = true
       })
       .addCase(createCategory.rejected, (state, action) => {
         state.loading = false; // Set loading state to false
         state.error = action.payload; // Set error message
+        state.success = false
       });
   },
 });
