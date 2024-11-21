@@ -130,26 +130,34 @@ export const toggleWishlistPostThunk = createAsyncThunk(
 // Add a comment to a post
 export const addCommentThunk = createAsyncThunk(
   "post/addComment",
-  async ({ postId, body }, { rejectWithValue }) => {
+  async ({ postId, body, page = 1, per_page = 10 }, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`/api/post/comment/${postId}`, {
+      const response = await fetch(`/api/post/comment/${postId}?page=${page}&per_page=${per_page}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: token ? `Bearer ${token}` : "",
         },
-        body: JSON.stringify({ body }),
+        body: JSON.stringify({ body }), // Sending 'body' instead of 'comment'
       });
 
       if (!response.ok) throw new Error("Failed to add comment");
+
       const data = await response.json();
-      return data;
+      
+      // Returning the updated list of comments and pagination data
+      return {
+        new_comment: data.new_comment, // The ID of the newly added comment
+        comments: data.comments, // Updated list of comments with replies
+        pagination: data.pagination, // Pagination data
+      };
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
+
 
 // Add a reply to a comment
 export const addReplyThunk = createAsyncThunk(
@@ -201,7 +209,8 @@ const postSlice = createSlice({
     },
     addComment(state, action) {
       if (state.post) {
-        state.post.comments.push(action.payload);
+        state.post.comments = action.payload.comments;
+        state.post.pagination = action.payload.pagination;
       }
     },
     addReply(state, action) {
@@ -272,7 +281,8 @@ const postSlice = createSlice({
       .addCase(addCommentThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         if (state.post) {
-          state.post.comments.push(action.payload);
+          state.post.comments = action.payload.comments;
+          state.post.pagination = action.payload.pagination;
         }
       })
       .addCase(addCommentThunk.rejected, (state, action) => {
