@@ -9,9 +9,14 @@ import {
 import "../styles/Feed.css"; // Import the CSS for styling
 
 const Feed = () => {
+  const navigate = useNavigate();
+
+  // Navigate to create post page
+  const handleCreatePost = () => {
+    navigate("/create-post");
+  };
   const dispatch = useDispatch();
   const { posts, isLoading, error } = useSelector((state) => state.feed);
-  const navigate = useNavigate(); // Hook for navigation
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -41,6 +46,9 @@ const Feed = () => {
 
   return (
     <div className="feed">
+      <div className="create-post-btn">
+        <button onClick={handleCreatePost}>Create Post</button>
+      </div>
       {posts.length === 0 ? (
         <p>No posts available</p>
       ) : (
