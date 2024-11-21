@@ -3,9 +3,12 @@ import { useSelector } from "react-redux";
 import Logout from "./Logout"; // Import the Logout component
 import { useState } from "react";
 import "../styles/Navbar.css";
+import { FaUserCircle } from "react-icons/fa"; // Importing a user icon from react-icons
 
 function Navbar() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); // Get login status from Redux
+  const profilePicture = useSelector((state) => state.auth.profilePicture); // Get profile picture from Redux
+  const userId = useSelector((state) => state.auth.userId); // Get user ID from Redux
   const [menuOpen, setMenuOpen] = useState(false); // State to control the mobile menu
 
   const toggleMenu = () => {
@@ -15,7 +18,22 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-logo">
-        <Link to="/">My App</Link> {/* Logo or brand name */}
+        {isLoggedIn && profilePicture ? (
+          <Link to={`/profile/${userId}`}>
+            {" "}
+            {/* Use userId from Redux state */}
+            <img
+              src={profilePicture} // Use profilePicture from Redux state
+              alt="User Profile"
+              className="navbar-profile-picture"
+            />
+          </Link>
+        ) : (
+          <Link to="/login">
+            <FaUserCircle size={40} className="navbar-user-icon" />{" "}
+            {/* Default user icon */}
+          </Link>
+        )}
       </div>
 
       <div
