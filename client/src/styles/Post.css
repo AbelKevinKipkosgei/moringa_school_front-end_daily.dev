@@ -289,3 +289,26 @@ video {
   background-color: #000;
 }
 
+.create-post-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-post-button:hover {
+  background-color: #45a049;
+}
+
+.create-post-button:active {
+  background-color: #3e8e41;
+}
+
