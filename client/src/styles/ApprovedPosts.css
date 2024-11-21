@@ -111,6 +111,7 @@
   width: 100%; 
   min-height: 120px; 
   background-color: #fff; 
+  color: black;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); 
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -137,7 +138,7 @@
 
 /* Hover effect for button */
 .flagging-reason button:hover {
-  background-color: #004291; 
+  background-color:#0056b3; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); 
 }
 
@@ -146,7 +147,104 @@
   background-color: #ddd; 
   cursor: not-allowed; 
   box-shadow: none; 
+
 }
+/* Style for the delete button */
+.delete-btn {
+  background-color: #0056b3; /* Red background */
+  color: white; /* White text */
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+/* Style for the delete button on hover */
+.delete-btn:hover {
+  background-color: #0056b3; /* Darker red on hover */
+}
+
+/* Optional: add a confirm and cancel button for delete confirmation */
+.delete-confirmation button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Style for "Yes, Delete" button */
+.delete-confirmation .delete-btn {
+  background-color: #0056b3;
+  color: white;
+}
+
+.delete-confirmation .delete-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Style for "Cancel" button */
+.delete-confirmation .cancel-btn {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.delete-confirmation .cancel-btn:hover {
+  background-color: #7f8c8d;
+}
+.delete-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(5px); /* Blurs the background */
+}
+
+/* The modal dialog box */
+.delete-modal {
+  background-color: white;
+  color: black;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Buttons inside the modal */
+.delete-modal button {
+  padding: 10px 15px;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-modal button:first-child {
+  background-color: #0056b3;
+  color: white;
+}
+
+.delete-modal button:last-child {
+  background-color: gray;
+  color: white;
+}
+
+
+
+.delete-modal-overlay.show .approved-posts-list {
+  filter: none;
+}
+
 
   
   /* Loading state */
