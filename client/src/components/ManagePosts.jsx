@@ -160,71 +160,8 @@ function ManagePosts() {
   const allPosts = [...approvedPosts, ...flaggedPosts];
 
   return (
-    <div className="manage-posts">
-      <h2>All Posts</h2>
-      {allPosts.length === 0 ? (
-        <p>No posts found.</p>
-      ) : (
-        <ul className="post-list">
-          {allPosts.map((post) => (
-            <li key={post.id} className="post-card">
-              <img
-                src={post.thumbnail_url}
-                alt={post.title}
-                className="post-thumbnail"
-              />
-              <div className="post-details">
-                <h3>{post.title}</h3>
-                <p>{post.body}</p>
-                <p>
-                  <strong>Type:</strong> {post.post_type}
-                </p>
-                <p>
-                  <strong>Approved:</strong> {post.approved ? "Yes" : "No"}
-                </p>
-                <p>
-                  <strong>Flagged:</strong> {post.flagged ? "Yes" : "No"}
-                </p>
-              </div>
-              <div className="post-actions">
-                <button
-                  onClick={() => setSelectedPost(post)}
-                  className="edit-button"
-                >
-                  Edit
-                </button>
-                {!post.approved && (
-                  <button
-                    onClick={() => handleApprove(post.id)}
-                    className="approve-button"
-                  >
-                    Approve
-                  </button>
-                )}
-                {!post.flagged && (
-                  <button
-                    onClick={() => handleFlag(post.id)}
-                    className="flag-button"
-                  >
-                    🚩 Flag
-                  </button>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-      {selectedPost && (
-        <EditPostModal
-          post={selectedPost}
-          onClose={closeModal}
-          onEdit={handleEdit} // Pass handleEdit to the modal
-        />
-      )}
-    </div>
-  );
+    <div>ManagePosts</div>
+  )
 }
 
-
-
-export default ManagePosts;
+export default ManagePosts
