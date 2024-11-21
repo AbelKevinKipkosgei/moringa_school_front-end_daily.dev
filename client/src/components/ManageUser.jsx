@@ -81,18 +81,18 @@ const ManageUser = () => {
                   <td>{user.username}</td>
                   <td>{user.email}</td>
                   <td>{user.role}</td>
-                  <td>{user.activated ? "NO" : "YES"}</td>
+                  <td>{user.activated ? "YES" : "NO"}</td>
                   <td className="action-btns">
                     <button
                       onClick={() => handleDeactivate(user.id)}
-                      disabled={user.activated}
+                      disabled={!user.activated}
                       className="deactivate-btn"
                     >
                       Deactivate
                     </button>
                     <button
                       onClick={() => handleActivate(user.id)}
-                      disabled={!user.activated}
+                      disabled={user.activated}
                       className="activate-btn"
                     >
                       Activate
