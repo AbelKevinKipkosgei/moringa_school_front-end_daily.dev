@@ -93,7 +93,7 @@ export const activateUser = createAsyncThunk(
 
       // Return user_id to update the state later
       
-      return { user_id, activated: user.activated };
+      return { user_id};
     } catch (error) {
       return rejectWithValue(error.message || "An error occurred while activating the user.");
     }
