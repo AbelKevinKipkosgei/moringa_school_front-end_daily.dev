@@ -7,12 +7,7 @@ import postReducer from "./slices/postSlice";
 import categoryReducer from './slices/categorySlice';
 import approvalReducer from './slices/approvalSlice';
 import flagReducer from './slices/flaggingSlice';
-
-
-
-
-
-
+import { createPostReducer } from './slices/createPostSlice';
 
 const store = configureStore({
   reducer: {
@@ -23,7 +18,8 @@ const store = configureStore({
     post: postReducer,
     categories:categoryReducer,
     approvals:approvalReducer,
-    flags:flagReducer
+    flags:flagReducer,
+    createPost: createPostReducer
   },
 });
 
