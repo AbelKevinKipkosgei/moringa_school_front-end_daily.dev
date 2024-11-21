@@ -2,7 +2,7 @@
 .manage-category-form-container {
     width: 100%;
     max-width: 500px;
-    margin: 0 auto; /* Centers the form horizontally */
+    margin: 0 auto; 
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;
@@ -10,7 +10,7 @@
     margin-top: 50px;
   }
   
-  /* Heading styling */
+  
   .manage-category-form-container h2 {
     text-align: center;
     font-size: 24px;
@@ -18,13 +18,13 @@
     margin-bottom: 20px;
   }
   
-  /* Form element styling */
+  
   .manage-category-form-container form {
     display: flex;
     flex-direction: column;
   }
   
-  /* Label styling */
+  
   .manage-category-form-container label {
     font-size: 16px;
     color: #333;
@@ -32,7 +32,7 @@
     font-weight: bold;
   }
   
-  /* Input field styling */
+  
   .manage-category-form-container input {
     padding: 7px;
     font-size: 16px;
@@ -46,11 +46,11 @@
     box-sizing: border-box;
   }
   
-  /* Button styling */
+  
   .manage-category-form-container button {
     padding: 7px;
     font-size: 16px;
-    background-color: #0056b3; /* Green button */
+    background-color: #0056b3; 
     color: white;
     border: none;
     border-radius: 10px;
@@ -59,20 +59,36 @@
   }
   
   .manage-category-form-container button:disabled {
-    background-color: #d3d3d3; /* Disabled button color */
+    background-color: #d3d3d3; 
     cursor: not-allowed;
   }
   
-  /* Button hover effect */
+  
   .manage-category-form-container button:hover {
     background-color: #0056b3;
   }
   
-  /* Error message styling */
+  
   .manage-category-form-container .error-message {
     color: red;
     font-size: 14px;
     margin-top: 10px;
     text-align: center;
+  }
+  .success-message {
+    color:#0056b3;
+    font-size: 1.2em;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  
+  .error-message {
+    color: red;
+    font-size: 1.2em;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
   }
   

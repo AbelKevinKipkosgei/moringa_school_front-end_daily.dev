@@ -6,7 +6,7 @@ import feedReducer from './slices/feedSlice';
 import postReducer from "./slices/postSlice";
 import categoryReducer from './slices/categorySlice';
 import approvalReducer from './slices/approvalSlice';
-import flagReducer from './slices/flaggingSlice';
+
 
 
 
@@ -23,7 +23,7 @@ const store = configureStore({
     post: postReducer,
     categories:categoryReducer,
     approvals:approvalReducer,
-    flags:flagReducer
+  
   },
 });
 

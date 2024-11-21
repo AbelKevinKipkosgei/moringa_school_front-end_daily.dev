@@ -9,7 +9,6 @@ import Techwriter from './pages/Techwriter';
 import AdminTechwriterProtectedRoute from "./components/AdminTechwriterProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute"
 import ManagePosts from "./components/ManagePosts";
-import FlaggedPosts from "./components/FlaggedPosts";
 import ApprovedPosts from "./components/ApprovedPosts";
 import PostPage from "./pages/PostPage";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
@@ -60,7 +59,7 @@ function App() {
           <Route path="manageusers" element={<ManageUser />} />
           <Route path="managecategory" element={<ManageCategory />} />
           <Route path="approvedposts" element={<ApprovedPosts />} />
-          <Route path="flaggedposts" element={<FlaggedPosts />} />
+          
         </Route>
 
    
@@ -87,7 +86,6 @@ function App() {
 
        
           <Route path="manageposts" element={<ManagePosts />} />
-          <Route path="flaggedposts" element={<FlaggedPosts />} />
           <Route path="approvedposts" element={<ApprovedPosts />} />
         </Route> 
       </Routes>

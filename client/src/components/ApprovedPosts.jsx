@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  approvePost,
-  setApprovedPosts,
-  setLoading,
-  setError,
-  deletePost,
-} from '../slices/approvalSlice';
-import { flagPost } from '../slices/flaggingSlice';
+import {approvePost,setApprovedPosts,setLoading,setError,deletePost,flagPost,unflagPost} from '../slices/approvalSlice';
 import { useNavigate } from 'react-router-dom';
 import '../styles/ApprovedPosts.css';
 
@@ -20,9 +13,12 @@ const ApprovedPosts = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [flaggedPostId, setFlaggedPostId] = useState(null);
   const [postToDelete, setPostToDelete] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   // Fetching posts from Redux state
   const { approvedPosts, loading, error } = useSelector((state) => state.approvals);
+
 
   // Fetch posts
   useEffect(() => {
@@ -33,6 +29,7 @@ const ApprovedPosts = () => {
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
+        
         const data = await response.json();
         dispatch(setApprovedPosts(data.posts));
       } catch (err) {
@@ -55,8 +52,8 @@ const ApprovedPosts = () => {
   };
 
   // Handle flag post
-  const handleFlag = (post_id) => {
-    setFlaggedPostId(post_id);
+  const handleFlagPost = (postId) => {
+    setFlaggedPostId(postId);
   };
 
   // Submit the flag action
@@ -66,23 +63,34 @@ const ApprovedPosts = () => {
       return;
     }
     dispatch(flagPost({ post_id: flaggedPostId, reason })).then(() => {
-      navigate('/admin/flaggedposts'); // Navigate to flagged posts page after flagging
+      setModalMessage("Successfully flagged post");
+      setIsModalVisible(true);
+      
+    });
+  };
+
+  // Handle unflag post
+  const handleunflagPost = (postId) => {
+    dispatch(unflagPost(postId)).then(() => {
+      setModalMessage("Successfully unflagged post");
+      setIsModalVisible(true);
     });
   };
 
   // Handle delete post
-  const handleDelete = (post_id) => {
-    setPostToDelete(post_id);
+  const handleDeletePost = (postId) => {
+    setPostToDelete(postId);
     setShowDeleteModal(true);
   };
 
   // Confirm delete action
   const confirmDelete = () => {
     dispatch(deletePost(postToDelete)).then(() => {
-      alert('Post deleted successfully');
+      setModalMessage("Deleted successfully");
+      setIsModalVisible(true);
       setPostToDelete(null); // Reset the state
-      setShowDeleteModal(false); 
-      navigate('/admin/approvedposts')
+      setShowDeleteModal(false);
+      navigate('/admin/approvedposts');
     });
   };
 
@@ -92,53 +100,69 @@ const ApprovedPosts = () => {
     setShowDeleteModal(false);
   };
 
-  // To handle no posts or incorrect data structure
+  
   if (!approvedPosts || !Array.isArray(approvedPosts) || approvedPosts.length === 0) {
     return <div>No posts available.</div>;
   }
 
-  // Render all posts
+  
   return (
-    <div className="approved-posts-list">
+    <div>
       <h2 className="approved-posts-title">Approved Posts</h2>
-      {approvedPosts.map((post) => (
-        <div className="approved-post-card" key={post.id}>
-          <h3>{post.title}</h3>
-          <img src={post.thumbnail_url} alt={post.title} />
-          <p>{post.body}</p>
-          <div className="approved-post-info">
-            <span>{post.approved ? 'Approved' : 'Pending Approval'}</span>
-            <br />
-            <span>{post.flagged ? 'Flagged' : 'Not Flagged'}</span>
-          </div>
-          <div>
-            {!post.approved ? (
-              <button onClick={() => handleApprove(post.id)}>Approve</button>
-            ) : (
-              <button onClick={() => handleFlag(post.id)}>Flag</button>
-            )}
-            <button
-              className="delete-btn"
-              onClick={() => handleDelete(post.id)}
-            >
-              Delete
-            </button>
-          </div>
-  
-          {flaggedPostId === post.id && (
-            <div className="flagging-reason">
-              <textarea
-                placeholder="Provide reason for flagging"
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-              />
-              <button onClick={handleSubmitFlag}>Submit Flag</button>
+      
+      <div className="approved-posts-list">
+        {approvedPosts.map((post) => (
+          <div className="approved-post-card" key={post.id}>
+            <h3>{post.title}</h3>
+            <img src={post.thumbnail_url} alt={post.title} />
+            <p>{post.body}</p>
+            <div className="approved-post-info">
+              <span>{post.approved ? 'Approved' : 'Pending Approval'}</span>
+              <br />
+              <span>{post.flagged ? 'Flagged' : 'Not Flagged'}</span>
             </div>
-          )}
+            <div>
+              {!post.approved ? (
+                <button onClick={() => handleApprove(post.id)}>Approve</button>
+              ) : (
+                <button onClick={() => post.flagged ? handleunflagPost(post.id) : handleFlagPost(post.id)}>
+                  {post.flagged ? 'Unflag' : 'Flag'}
+                </button>
+              )}
+              <button
+                className="delete-btn"
+                onClick={() => handleDeletePost(post.id)}
+              >
+                Delete
+              </button>
+            </div>
+
+            
+            {flaggedPostId === post.id && !post.flagged && (
+              <div className="flagging-reason">
+                <textarea
+                  placeholder="Provide reason for flagging"
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                />
+                <button onClick={handleSubmitFlag}>Submit Flag</button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      
+      {isModalVisible && (
+        <div className="modal-blur" onClick={() => setIsModalVisible(false)}>
+          <div className="modal-content">
+            <p>{modalMessage}</p>
+            <button onClick={() => setIsModalVisible(false)}>Close</button>
+          </div>
         </div>
-      ))}
-  
-      {/* Delete confirmation modal */}
+      )}
+
+
       {showDeleteModal && (
         <div className="delete-modal-overlay">
           <div className="delete-modal">

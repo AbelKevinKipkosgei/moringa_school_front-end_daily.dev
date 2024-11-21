@@ -10,6 +10,10 @@ const getAuthToken = () => {
   return token;
 };
 
+
+
+
+
 // Approve a post
 export const approvePost = createAsyncThunk(
   'approvals/approvePost',
@@ -34,16 +38,15 @@ export const approvePost = createAsyncThunk(
         throw new Error(`Error: ${response.statusText}`);
       }
 
-      // Parse the response body as JSON
+      
       const data = await response.json();
 
-      // Log the API response
-      console.log('API Response:', data);
+      
 
-      // Return the data (for Redux to handle)
+      
       return data;
     } catch (error) {
-      // Log and return the error message if something went wrong
+      
       console.error('Error approving post:', error);
       return rejectWithValue(error.message || 'Failed to approve post');
     }
@@ -74,18 +77,89 @@ export const deletePost = createAsyncThunk(
         throw new Error(`Error: ${response.statusText}`);
       }
 
-      // Parse the response body as JSON
+      
       const data = await response.json();
 
-      // Log the API response
-      console.log('API Response:', data);
+      
 
-      // Return the data (for Redux to handle)
+      
       return data;
     } catch (error) {
-      // Log and return the error message if something went wrong
+      
       console.error('Error deleting post:', error);
       return rejectWithValue(error.message || 'Failed to delete post');
+    }
+  }
+);
+
+// Flag a specific post
+export const flagPost = createAsyncThunk(
+  'flags/flagPost',
+  async ({ post_id, reason }, { dispatch, rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        return rejectWithValue('No access token found');
+      }
+
+      const response = await fetch(`http://127.0.0.1:5555/api/posts/flag/${post_id}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reason }), 
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      
+
+      
+      dispatch(addFlaggedPost(data));  
+
+      return data;
+    } catch (error) {
+      console.error('Error flagging post:', error);
+      return rejectWithValue(error.message || 'Failed to flag post');
+    }
+  }
+);
+
+// Unflag a specific post
+export const unflagPost = createAsyncThunk(
+  'flags/unflagPost',
+  async (post_id, { dispatch, rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        return rejectWithValue('No access token found');
+      }
+
+      const response = await fetch(`http://127.0.0.1:5555/api/posts/unflag/${post_id}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      
+      
+      dispatch(removeFlaggedPost(post_id));  
+
+      return data;
+    } catch (error) {
+      console.error('Error unflagging post:', error);
+      return rejectWithValue(error.message || 'Failed to unflag post');
     }
   }
 );
@@ -94,6 +168,7 @@ const approvalSlice = createSlice({
   name: 'approvals',
   initialState: {
     approvedPosts: [],
+    flaggedPosts: [],  // Add flaggedPosts state
     loading: false,
     error: null,
   },
@@ -106,6 +181,16 @@ const approvalSlice = createSlice({
     },
     setError: (state, action) => {
       state.error = action.payload;
+    },
+    addFlaggedPost: (state, action) => {
+      if (!state.flaggedPosts.find(post => post.id === action.payload.id)) {
+        state.flaggedPosts.push(action.payload);
+      }
+    },
+    removeFlaggedPost: (state, action) => {
+      state.flaggedPosts = state.flaggedPosts.filter(
+        post => post.id !== action.payload
+      );
     },
   },
   extraReducers: (builder) => {
@@ -127,12 +212,10 @@ const approvalSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(deletePost.pending, (state) => {
-        state.loading = true;  // Change state to loading
-        state.error = null;
+        state.loading = true;
       })
       .addCase(deletePost.fulfilled, (state, action) => {
         state.loading = false;
-        // Filter out the deleted post by post_id
         state.approvedPosts = state.approvedPosts.filter(
           (post) => post.id !== action.payload.post_id
         );
@@ -140,10 +223,31 @@ const approvalSlice = createSlice({
       .addCase(deletePost.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(flagPost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(flagPost.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(flagPost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(unflagPost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(unflagPost.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(unflagPost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
 
-export const { setApprovedPosts, setLoading, setError } = approvalSlice.actions;
-export const approvalReducer = approvalSlice.reducer;
-export default approvalReducer;
+export const { setApprovedPosts, setLoading, setError, addFlaggedPost, removeFlaggedPost } = approvalSlice.actions;
+export default approvalSlice.reducer;
