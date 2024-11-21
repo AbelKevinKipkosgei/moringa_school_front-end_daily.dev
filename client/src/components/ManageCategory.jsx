@@ -18,7 +18,7 @@ const ManageCategory = () => {
   };
 
   return (
-    <div className="form-container">
+    <div className="manage-category-form-container">
       <h2>Create New Category</h2>
       <form onSubmit={handleSubmit}>
         <div>

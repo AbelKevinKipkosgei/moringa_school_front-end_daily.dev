@@ -2,38 +2,54 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchPostById,
-  likePostThunk,
-  wishlistPostThunk,
+  toggleLikePostThunk,
   addCommentThunk,
   addReplyThunk,
+  toggleWishlistPostThunk,
 } from "../slices/postSlice"; // Import necessary actions
+import { selectUserId } from "../slices/authSlice";
 import { useParams } from "react-router-dom";
-import { FaThumbsUp, FaComment, FaHeart, FaPaperPlane } from "react-icons/fa";
+import { FaThumbsUp, FaHeart, FaPaperPlane, FaReply } from "react-icons/fa"; // Import the reply icon
 import "../styles/Post.css";
 
 const Post = () => {
-  const { postId } = useParams();
+  const { postId } = useParams(); // Extract postId from URL params
   const dispatch = useDispatch();
   const { post, isLoading, error } = useSelector((state) => state.post);
   const [replyFormVisible, setReplyFormVisible] = useState(null);
   const [newComment, setNewComment] = useState("");
   const [loadingComment, setLoadingComment] = useState(false);
   const [newReply, setNewReply] = useState("");
+  const userId = useSelector(selectUserId);
 
+  // Fetch post data when the component mounts or postId changes
   useEffect(() => {
     if (postId) {
-      dispatch(fetchPostById(postId));
+      dispatch(fetchPostById(postId)); // Fetch post with the correct postId
     }
   }, [dispatch, postId]);
 
+  // Handle new comment submission
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
     setLoadingComment(true);
+    if (!userId) {
+      console.error("User is not authenticated");
+      return;
+    }
 
     try {
-      await dispatch(addCommentThunk(postId, newComment));
-      setNewComment("");
+      await dispatch(
+        addCommentThunk({
+          postId, // Post ID
+          body: newComment, // Comment body
+          userId,
+          page: 1, // Assuming you want the first page for comments
+          per_page: 10, // Adjust as necessary for pagination
+        })
+      );
+      setNewComment(""); // Clear comment input after submission
       setLoadingComment(false);
     } catch (error) {
       setLoadingComment(false);
@@ -41,42 +57,49 @@ const Post = () => {
     }
   };
 
+  // Handle new reply submission
   const handleReplySubmit = async (e, commentId) => {
     e.preventDefault();
     if (!newReply.trim()) return;
 
     try {
-      await dispatch(addReplyThunk(commentId, newReply));
+      await dispatch(addReplyThunk(postId, commentId, newReply)); // Pass both postId and commentId
       setNewReply("");
     } catch (error) {
       console.error("Error submitting reply:", error);
     }
   };
 
+  // Handle like button toggle
   const handleLikeToggle = () => {
-    if (post) {
-      dispatch(likePostThunk(postId));
+    if (postId) {
+      dispatch(toggleLikePostThunk({ postId })); // Wrap postId in an object
     }
   };
 
+  // Handle wishlist toggle
   const handleWishlistToggle = () => {
-    if (post) {
-      dispatch(wishlistPostThunk(postId));
+    if (postId) {
+      dispatch(toggleWishlistPostThunk({ postId })); // Ensure postId is passed here for wishlist toggle
     }
   };
 
+  // Toggle visibility of reply form for each comment
   const toggleReplyForm = (commentId) => {
     setReplyFormVisible(replyFormVisible === commentId ? null : commentId);
   };
 
+  // Render loading state
   if (isLoading) {
     return <p className="post-message">Loading post...</p>;
   }
 
+  // Render error state
   if (error) {
     return <p className="post-message">Error: {error}</p>;
   }
 
+  // Render post not found state
   if (!post) {
     return <p className="post-message">Post not found</p>;
   }
@@ -89,12 +112,26 @@ const Post = () => {
         alt={post.title}
         className="post-thumbnail"
       />
+
+      {post.post_type === "video" && post.media_url && (
+        <video controls className="post-media">
+          <source src={post.media_url} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      )}
+      {post.post_type === "audio" && post.media_url && (
+        <audio controls className="post-media">
+          <source src={post.media_url} type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      )}
+
       <p className="post-body">{post.body}</p>
 
       <div className="post-meta">
         <p>
           <strong>Category:</strong>{" "}
-          {post.category ? post.category.name : "Uncategorized"}
+          {post.category ? post.category : "Uncategorized"}
         </p>
         <p>
           <strong>Created At:</strong>
@@ -109,7 +146,10 @@ const Post = () => {
 
         <div className="button-container">
           <button className="like-button" onClick={handleLikeToggle}>
-            <FaThumbsUp /> {post.isLiked ? "Unlike" : "Like"}
+            <FaThumbsUp
+              style={{ color: post.isLiked ? "blue" : "gray" }} // Reflect like status from Redux state
+            />{" "}
+            {post.isLiked ? "Unlike" : "Like"}
           </button>
           <button className="wishlist-button" onClick={handleWishlistToggle}>
             <FaHeart />{" "}
@@ -117,118 +157,84 @@ const Post = () => {
           </button>
         </div>
 
-        {post.media_url && (
-          <div className="media-container">
-            {post.post_type === "video" ? (
-              <video controls width="100%">
-                <source src={post.media_url} type="video/mp4" />
-              </video>
-            ) : post.post_type === "audio" ? (
-              <audio controls>
-                <source src={post.media_url} type="audio/mp3" />
-              </audio>
-            ) : null}
-          </div>
-        )}
-
         <div className="comment-section">
-          <h3>Leave a Comment</h3>
+          <h3>Comments ({post.comments.length})</h3>
           <form onSubmit={handleCommentSubmit}>
             <textarea
-              className="comment-input"
-              placeholder="Write a comment..."
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Write a comment..."
             />
-            <button
-              type="submit"
-              className="comment-button"
-              disabled={loadingComment}
-            >
+            <button type="submit" disabled={loadingComment}>
               {loadingComment ? "Submitting..." : <FaPaperPlane />} Submit
             </button>
           </form>
-        </div>
 
-        <div className="comments-section">
-          <strong>Comments:</strong>
           <ul>
-            {post.comments &&
-              post.comments.map((comment) => (
-                <li key={comment.id} className="comment-item">
-                  <div className="comment-header">
-                    <img
-                      src={comment.user.profile_pic_url || "default-avatar.jpg"}
-                      alt={comment.user.username}
-                      className="comment-avatar"
+            {post.comments.map((comment) => (
+              <li key={comment.id} className="comment-item">
+                <div className="comment-header">
+                  <img
+                    src={comment.user.profile_pic_url || "default-avatar.jpg"}
+                    alt={comment.user.username}
+                    className="comment-avatar"
+                  />
+                  <p className="comment-username">{comment.user.username}</p>
+                </div>
+                <p className="comment-body">{comment.body}</p>
+                <p className="comment-meta">
+                  <em>{new Date(comment.created_at).toLocaleDateString()}</em>
+                </p>
+
+                <div className="reply-icon-container">
+                  <FaReply
+                    onClick={() => toggleReplyForm(comment.id)}
+                    className="reply-icon"
+                  />
+                  <span className="reply-text">
+                    {replyFormVisible === comment.id ? "Hide Replies" : "Reply"}
+                  </span>
+                </div>
+
+                {replyFormVisible === comment.id && (
+                  <form
+                    onSubmit={(e) => handleReplySubmit(e, comment.id)}
+                    className="reply-form"
+                  >
+                    <textarea
+                      value={newReply}
+                      onChange={(e) => setNewReply(e.target.value)}
+                      placeholder="Write a reply..."
                     />
-                    <p className="comment-username">{comment.user.username}</p>
-                  </div>
-                  <p className="comment-body">{comment.body}</p>
-                  <p className="comment-meta">
-                    <em>{new Date(comment.created_at).toLocaleDateString()}</em>
-                  </p>
-
-                  <div className="button-container">
-                    <button
-                      className="reply-button"
-                      onClick={() => toggleReplyForm(comment.id)}
-                    >
-                      <FaComment /> Reply
+                    <button type="submit">
+                      <FaPaperPlane /> Submit Reply
                     </button>
-                  </div>
+                  </form>
+                )}
 
-                  {replyFormVisible === comment.id && (
-                    <form
-                      onSubmit={(e) => handleReplySubmit(e, comment.id)}
-                      className="reply-form"
-                    >
-                      <textarea
-                        className="comment-input"
-                        placeholder="Write a reply..."
-                        value={newReply}
-                        onChange={(e) => setNewReply(e.target.value)}
-                      />
-                      <button type="submit" className="comment-button">
-                        Submit
-                      </button>
-                    </form>
-                  )}
-
-                  {comment.replies && comment.replies.length > 0 && (
-                    <div className="replies-section">
-                      <strong>Replies:</strong>
-                      <ul>
-                        {comment.replies.map((reply) => (
-                          <li key={reply.id} className="reply-item">
-                            <div className="reply-header">
-                              <img
-                                src={
-                                  reply.user.profile_pic_url ||
-                                  "default-avatar.jpg"
-                                }
-                                alt={reply.user.username}
-                                className="reply-avatar"
-                              />
-                              <p className="reply-username">
-                                {reply.user.username}
-                              </p>
-                            </div>
-                            <p className="reply-body">{reply.body}</p>
-                            <p className="reply-meta">
-                              <em>
-                                {new Date(
-                                  reply.created_at
-                                ).toLocaleDateString()}
-                              </em>
-                            </p>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </li>
-              ))}
+                {comment.replies && comment.replies.length > 0 && (
+                  <ul className="replies-list">
+                    {comment.replies.map((reply) => (
+                      <li key={reply.id} className="reply-item">
+                        <div className="reply-header">
+                          <img
+                            src={
+                              reply.user.profile_pic_url || "default-avatar.jpg"
+                            }
+                            alt={reply.user.username}
+                            className="reply-avatar"
+                          />
+                          <p className="reply-username">
+                            {reply.user.username}
+                          </p>
+                        </div>
+                        <p className="reply-body">{reply.body}</p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
           </ul>
         </div>
       </div>
