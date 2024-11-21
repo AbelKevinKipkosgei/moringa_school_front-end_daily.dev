@@ -10,11 +10,10 @@ const getAuthToken = () => {
   return token;
 };
 
-
 // Approve a post
 export const approvePost = createAsyncThunk(
   'approvals/approvePost',
-  async (post_id, {rejectWithValue }) => {
+  async (post_id, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
       if (!token) {
@@ -47,6 +46,46 @@ export const approvePost = createAsyncThunk(
       // Log and return the error message if something went wrong
       console.error('Error approving post:', error);
       return rejectWithValue(error.message || 'Failed to approve post');
+    }
+  }
+);
+
+// Delete a post
+export const deletePost = createAsyncThunk(
+  'approvals/deletePost',
+  async (post_id, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        return rejectWithValue('No access token found');
+      }
+
+      const response = await fetch(`http://127.0.0.1:5555/api/admin/post/delete/${post_id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Check if the response is OK
+      if (!response.ok) {
+        // Throw an error with the response's status text
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      // Parse the response body as JSON
+      const data = await response.json();
+
+      // Log the API response
+      console.log('API Response:', data);
+
+      // Return the data (for Redux to handle)
+      return data;
+    } catch (error) {
+      // Log and return the error message if something went wrong
+      console.error('Error deleting post:', error);
+      return rejectWithValue(error.message || 'Failed to delete post');
     }
   }
 );
@@ -84,6 +123,21 @@ const approvalSlice = createSlice({
         );
       })
       .addCase(approvePost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deletePost.pending, (state) => {
+        state.loading = true;  // Change state to loading
+        state.error = null;
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.loading = false;
+        // Filter out the deleted post by post_id
+        state.approvedPosts = state.approvedPosts.filter(
+          (post) => post.id !== action.payload.post_id
+        );
+      })
+      .addCase(deletePost.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
