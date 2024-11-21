@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Logout from "./Logout"; // Import the Logout component
+import Logout from "./Logout"; 
 import { useState } from "react";
 import "../styles/Navbar.css";
 
@@ -28,7 +28,7 @@ function Navbar() {
       <ul className={`navbar-list ${menuOpen ? "active" : ""}`}>
         {isLoggedIn && (
           <li className="navbar-item">
-            <Link to="/admin">Admin</Link>
+            <Link to="/admin/manageusers">Admin</Link>
           </li>
         )}
         <li className="navbar-item">
