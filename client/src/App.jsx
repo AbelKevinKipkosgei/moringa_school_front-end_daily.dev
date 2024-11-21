@@ -6,8 +6,6 @@ import FeedPage from "./pages/FeedPage";
 import LogInPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
 import Techwriter from './pages/Techwriter';
-// import AdminTechwriterProtectedRoute from "./compAdminTechwriterProtectedRouteonents/";
-import Techwriter from "./pages/Techwriter";
 import AdminTechwriterProtectedRoute from "./components/AdminTechwriterProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute"
 import ManagePosts from "./components/ManagePosts";
@@ -65,7 +63,7 @@ function App() {
           <Route path="flaggedposts" element={<FlaggedPosts />} />
         </Route>
 
-   */}
+   
         
         
         {/* Techwriter protected route */}
@@ -91,7 +89,7 @@ function App() {
           <Route path="manageposts" element={<ManagePosts />} />
           <Route path="flaggedposts" element={<FlaggedPosts />} />
           <Route path="approvedposts" element={<ApprovedPosts />} />
-        </Route> */}
+        </Route> 
       </Routes>
     </Router>
   );
