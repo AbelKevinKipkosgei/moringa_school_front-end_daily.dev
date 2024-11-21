@@ -15,6 +15,7 @@ import PostPage from "./pages/PostPage";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 import ManageUser from "./components/ManageUser"
 import ManageCategory from "./components/ManageCategory";
+import CreatePostPage from "./pages/CreatePostPage";
 
 
 
@@ -25,9 +26,9 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
-        
         <Route path="/feed" element={<FeedPage />} />
         <Route path="/post/:postId" element={<PostPage />} />
+        <Route path="/create-post" element={<CreatePostPage />} />
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
@@ -38,7 +39,7 @@ function App() {
           element={
             <AdminProtectedRoute
               isLoggedIn={isLoggedIn}
-              userRole={userRole}  
+              userRole={userRole}
               allowedRoles={["admin"]}
             >
               <Admin />
@@ -57,7 +58,7 @@ function App() {
           element={
             <AdminTechwriterProtectedRoute
               isLoggedIn={isLoggedIn}
-              userRole={userRole}  
+              userRole={userRole}
               allowedRoles={["techwriter", "admin"]}
             >
               <Techwriter />
