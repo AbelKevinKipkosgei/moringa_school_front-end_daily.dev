@@ -41,4 +41,4 @@ AdminTechwriterProtectedRoute.propTypes = {
 };
 
 
-// export default AdminTechwriterProtectedRoute;
+export default AdminTechwriterProtectedRoute;
