@@ -1,8 +1,34 @@
+
 import React from "react";
 import { Formik, Form, Field } from "formik";
 import "../styles/EditPostModal.css";
 
 const EditPostModal = ({ post, onClose, onSubmit }) => {
+  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:5555/api/posts/edit/${post.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update post");
+      }
+
+      const updatedPost = await response.json();
+      onSubmit(updatedPost.post); // Pass updated post back to parent
+      onClose();
+    } catch (error) {
+      setErrors({ submit: "Failed to update post." });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="modal-overlay">
       <div className="modal">
@@ -17,16 +43,7 @@ const EditPostModal = ({ post, onClose, onSubmit }) => {
             approved: post.approved,
             flagged: post.flagged,
           }}
-          onSubmit={async (values, { setSubmitting, setErrors }) => {
-            try {
-              await onSubmit(values);
-              onClose();
-            } catch (error) {
-              setErrors({ submit: "Failed to update post." });
-            } finally {
-              setSubmitting(false);
-            }
-          }}
+          onSubmit={handleSubmit}
         >
           {({ isSubmitting, errors }) => (
             <Form>
@@ -37,10 +54,9 @@ const EditPostModal = ({ post, onClose, onSubmit }) => {
               <div className="form-group">
                 <label htmlFor="post_type">Post Type</label>
                 <Field as="select" name="post_type" required>
-                  <option value="article">Article</option>
+                  <option value="blog">Blog</option>
                   <option value="video">Video</option>
-                  <option value="photo">Photo</option>
-                  {/* Add more options as necessary */}
+                  <option value="audio">Audio</option>
                 </Field>
               </div>
               <div className="form-group">
@@ -65,10 +81,18 @@ const EditPostModal = ({ post, onClose, onSubmit }) => {
               </div>
               {errors.submit && <div className="error">{errors.submit}</div>}
               <div className="modal-actions">
-                <button type="button" onClick={onClose}>
-                  Cancel
+                <button
+                  type="button"
+                  className="close-button"
+                  onClick={onClose}
+                >
+                  Close
                 </button>
-                <button type="submit" disabled={isSubmitting}>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="submit-button"
+                >
                   {isSubmitting ? "Saving..." : "Save Changes"}
                 </button>
               </div>
@@ -81,3 +105,7 @@ const EditPostModal = ({ post, onClose, onSubmit }) => {
 };
 
 export default EditPostModal;
+
+
+
+

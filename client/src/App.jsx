@@ -5,7 +5,7 @@ import Admin from "./pages/Admin";
 import FeedPage from "./pages/FeedPage";
 import LogInPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
-import Techwriter from "./pages/Techwriter";
+import Techwriter from './pages/Techwriter';
 import AdminTechwriterProtectedRoute from "./components/AdminTechwriterProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute"
 import ManagePosts from "./components/ManagePosts";
@@ -14,7 +14,9 @@ import ApprovedPosts from "./components/ApprovedPosts";
 import PostPage from "./pages/PostPage";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 import ManageUser from "./components/ManageUser"
+import EditPostModal from "./components/EditPostModal"
 import ManageCategory from "./components/ManageCategory";
+
 
 
 
@@ -30,6 +32,15 @@ function App() {
         <Route path="/post/:postId" element={<PostPage />} />
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+
+        <Route path="/Admin" element={<Admin />} />
+        <Route path="/Techwriter" element={<Techwriter />} />
+        
+        
+        
+        {/* Admin Route with Nested Routes */}
+        {/* <Route path="/admin" element={<Admin />}>
+
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
         {/* Admin Route */}
@@ -45,14 +56,23 @@ function App() {
             </AdminProtectedRoute>
           }
         >
+
           <Route path="manageusers" element={<ManageUser />} />
           <Route path="managecategory" element={<ManageCategory />} />
           <Route path="approvedposts" element={<ApprovedPosts />} />
           <Route path="flaggedposts" element={<FlaggedPosts />} />
         </Route>
 
+   
+        
+        
+        {/* Techwriter protected route */}
+        {/* <Route
+
+
         {/* Techwriter Route */}
         <Route
+
           path="/techwriter/*"
           element={
             <AdminTechwriterProtectedRoute
@@ -64,10 +84,12 @@ function App() {
             </AdminTechwriterProtectedRoute>
           }
         >
+
+       
           <Route path="manageposts" element={<ManagePosts />} />
           <Route path="flaggedposts" element={<FlaggedPosts />} />
           <Route path="approvedposts" element={<ApprovedPosts />} />
-        </Route>
+        </Route> 
       </Routes>
     </Router>
   );
