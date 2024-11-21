@@ -7,6 +7,7 @@ import {
   addReplyThunk,
   toggleWishlistPostThunk,
 } from "../slices/postSlice"; // Import necessary actions
+import { selectUserId } from "../slices/authSlice";
 import { useParams } from "react-router-dom";
 import { FaThumbsUp, FaHeart, FaPaperPlane, FaReply } from "react-icons/fa"; // Import the reply icon
 import "../styles/Post.css";
@@ -19,6 +20,7 @@ const Post = () => {
   const [newComment, setNewComment] = useState("");
   const [loadingComment, setLoadingComment] = useState(false);
   const [newReply, setNewReply] = useState("");
+  const userId = useSelector(selectUserId);
 
   // Fetch post data when the component mounts or postId changes
   useEffect(() => {
@@ -32,10 +34,22 @@ const Post = () => {
     e.preventDefault();
     if (!newComment.trim()) return;
     setLoadingComment(true);
+    if (!userId) {
+      console.error("User is not authenticated");
+      return;
+    }
 
     try {
-      await dispatch(addCommentThunk(postId, newComment)); // Ensure postId is passed here
-      setNewComment("");
+      await dispatch(
+        addCommentThunk({
+          postId, // Post ID
+          body: newComment, // Comment body
+          userId,
+          page: 1, // Assuming you want the first page for comments
+          per_page: 10, // Adjust as necessary for pagination
+        })
+      );
+      setNewComment(""); // Clear comment input after submission
       setLoadingComment(false);
     } catch (error) {
       setLoadingComment(false);
@@ -66,7 +80,7 @@ const Post = () => {
   // Handle wishlist toggle
   const handleWishlistToggle = () => {
     if (postId) {
-      dispatch(toggleWishlistPostThunk({postId})); // Ensure postId is passed here for wishlist toggle
+      dispatch(toggleWishlistPostThunk({ postId })); // Ensure postId is passed here for wishlist toggle
     }
   };
 

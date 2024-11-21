@@ -2,10 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const TOKEN_KEY = "authToken";
 const USER_ROLE_KEY = "userRole";
+const userId = "userId";
 
 const initialState = {
   isLoggedIn: !!localStorage.getItem(TOKEN_KEY), // Check if token exists in localStorage
   userRole: localStorage.getItem(USER_ROLE_KEY) || null,
+  userId: localStorage.getItem("userId") || null,
   loading: false,
   error: null,
   userInfo: null, 
@@ -20,8 +22,10 @@ const authSlice = createSlice({
       const { token, role } = action.payload;
       localStorage.setItem(TOKEN_KEY, token); // Save token to local storage
       localStorage.setItem(USER_ROLE_KEY, role); // Save role to local storage
+      localStorage.setItem("userId", userId);
       state.isLoggedIn = true;
       state.userRole = role;
+      state.userId = userId;
     },
     logout(state) {
       localStorage.removeItem(TOKEN_KEY); // Remove token from local storage
@@ -61,5 +65,6 @@ export const {
 
 // Selector to get user role from Redux state
 export const selectUserRole = (state) => state.auth.userRole;
+export const selectUserId = (state) => state.auth.userId;
 
 export default authSlice.reducer;
