@@ -49,7 +49,7 @@ function Navbar() {
               <Link to="/techwriter">Techwriter</Link>
             </li>
             <li className="navbar-item">
-              <Logout /> {/* Logout button */}
+              <Logout className="logout-btn" /> {/* Styled Logout button */}
             </li>
           </>
         )}

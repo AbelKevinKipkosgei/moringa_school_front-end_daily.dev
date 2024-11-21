@@ -1,0 +1,95 @@
+/* ManageUser Table Styles */
+  .manage-user-table {
+    width: 97%; /* Reduce table width to fit within the page */
+    max-width: 1000px; /* Max width for the table */
+    margin-top: 60px;
+    margin-left: 20px; /* Ensure space from the left edge */
+    border-collapse: collapse; /* Collapse borders for a clean look */
+    margin-bottom: 20px; /* Space below the table */
+    background-color: #fff; /* Space from the left to avoid touching the screen edge */
+
+    
+  }
+  /* Center the h2 element */
+    .manage-user-header {
+        text-align: center; /* Centers the text */
+        font-size: 35px; /* Adjust font size as needed */
+        margin-bottom: 20px; /* Space below the header */
+        color: #f8f3f3; /* Optional: Set a dark color for the text */
+        font-weight: bold; /* Optional: Make the text bold */
+  }
+  .manage-user-table th,
+  .manage-user-table td {
+    padding: 12px 15px;
+    text-align: center; /* Center text in cells */
+    border: 1px solid #ddd; /* Light border around cells */
+    color: black; /* Black text color */
+    background-color: #f9f9f9; /* Light background for better readability */
+}
+  
+  .manage-user-table th {
+    background-color: white;
+    font-weight: bold;
+  }
+  
+  .manage-user-table td {
+    background-color: #fff;
+  }
+  
+  .manage-user-table tr:nth-child(even) {
+    background-color: #fff;
+  }
+  
+  .manage-user-table tr:hover {
+    background-color: #fff;
+  }
+  
+  .manage-user-table .action-btns {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .manage-user-table .action-btns button {
+    padding: 6px 12px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .manage-user-table .action-btns button:disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+  }
+  
+  .manage-user-table .deactivate-btn {
+    background-color:  #0056b3;
+    color: white;
+  }
+  
+  .manage-user-table .deactivate-btn:hover {
+    background-color:  #0056b3;
+  }
+  
+  .manage-user-table .activate-btn {
+    background-color:  #0056b3;
+    color: white;
+  }
+  
+  .manage-user-table .activate-btn:hover {
+    background-color:  #0056b3;
+  }
+  
+  .manage-user-table .message {
+    font-size: 14px;
+    color:  #0056b3;
+    margin-top: 10px;
+  }
+  
+  .manage-user-table .error-message {
+    font-size: 14px;
+    color: red;
+    margin-top: 10px;
+  }
+  
