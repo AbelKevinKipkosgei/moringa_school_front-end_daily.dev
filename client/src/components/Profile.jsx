@@ -8,11 +8,13 @@ function Profile() {
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   useEffect(() => {
     // Fetch user data by userId
     const fetchUser = async () => {
       try {
-        const response = await fetch(`/api/users/${userId}`);
+        const response = await fetch(`${backendUrl}/api/users/${userId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
         }
@@ -26,7 +28,7 @@ function Profile() {
     };
 
     fetchUser();
-  }, [userId]);
+  }, [userId, backendUrl]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;

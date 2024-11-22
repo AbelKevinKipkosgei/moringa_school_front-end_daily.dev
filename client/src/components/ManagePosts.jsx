@@ -18,11 +18,13 @@ function ManagePosts() {
 
   const [selectedPost, setSelectedPost] = useState(null); // State for selected post for editing
 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   useEffect(() => {
     const fetchPosts = async () => {
       dispatch(setLoading(true));
       try {
-        const response = await fetch("http://127.0.0.1:5555/api/allposts", {
+        const response = await fetch(`${backendUrl}/api/allposts`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -54,11 +56,11 @@ function ManagePosts() {
     };
 
     fetchPosts();
-  }, [dispatch]);
+  }, [dispatch, backendUrl]);
 
   const handleApprove = async (postId) => {
     try {
-      const response = await fetch(`/api/posts/${postId}/approve`, {
+      const response = await fetch(`${backendUrl}/api/posts/${postId}/approve`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -82,7 +84,7 @@ function ManagePosts() {
 
   const handleFlag = async (postId) => {
     try {
-      const response = await fetch(`/api/posts/${postId}/flag`, {
+      const response = await fetch(`${backendUrl}/api/posts/${postId}/flag`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -107,7 +109,7 @@ function ManagePosts() {
   const handleEdit = async (post, updatedData) => {
     console.log("hello", localStorage.getItem("authToken"))
     try {
-      const response = await fetch(`http://127.0.0.1:5555/api/posts/edit/${post.id}`, {
+      const response = await fetch(`${backendUrl}/api/posts/edit/${post.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

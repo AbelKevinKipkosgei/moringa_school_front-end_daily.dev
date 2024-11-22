@@ -1,4 +1,3 @@
-import React from 'react'
 import ApprovedPosts from '../components/ApprovedPosts'
 
 const ApprovedPostsPage = () => {

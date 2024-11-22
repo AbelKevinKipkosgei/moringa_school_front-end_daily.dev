@@ -10,10 +10,6 @@ const getAuthToken = () => {
   return token;
 };
 
-
-
-
-
 // Approve a post
 export const approvePost = createAsyncThunk(
   'approvals/approvePost',
@@ -24,7 +20,9 @@ export const approvePost = createAsyncThunk(
         return rejectWithValue('No access token found');
       }
 
-      const response = await fetch(`http://127.0.0.1:5555/api/posts/approve/${post_id}`, {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+      const response = await fetch(`${backendUrl}}/api/posts/approve/${post_id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +61,9 @@ export const deletePost = createAsyncThunk(
         return rejectWithValue('No access token found');
       }
 
-      const response = await fetch(`http://127.0.0.1:5555/api/admin/post/delete/${post_id}`, {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+      const response = await fetch(`${backendUrl}/admin/post/delete/${post_id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -102,7 +102,9 @@ export const flagPost = createAsyncThunk(
         return rejectWithValue('No access token found');
       }
 
-      const response = await fetch(`http://127.0.0.1:5555/api/posts/flag/${post_id}`, {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+      const response = await fetch(`${backendUrl}/api/posts/flag/${post_id}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -139,7 +141,9 @@ export const unflagPost = createAsyncThunk(
         return rejectWithValue('No access token found');
       }
 
-      const response = await fetch(`http://127.0.0.1:5555/api/posts/unflag/${post_id}`, {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+      const response = await fetch(`${backendUrl}/api/posts/unflag/${post_id}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

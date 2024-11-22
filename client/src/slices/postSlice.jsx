@@ -18,12 +18,13 @@ const initialState = {
 };
 
 // Fetch a post by ID
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const fetchPostById = createAsyncThunk(
   "post/fetchById",
   async (postId, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`/api/post/read/${postId}`, {
+      const response = await fetch(`${backendUrl}/api/post/read/${postId}`, {
         headers: {
           Authorization: token ? `Bearer ${token}` : "",
         },
@@ -47,8 +48,9 @@ export const toggleLikePostThunk = createAsyncThunk(
         return rejectWithValue("Post ID is required");
       }
 
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
       const token = getAuthToken(); // Retrieve the JWT token
-      const url = `/api/post/likeunlike/${postId}`; // Backend route
+      const url = `${backendUrl}/api/post/likeunlike/${postId}`; // Backend route
 
       const response = await fetch(url, {
         method: "POST",
@@ -91,9 +93,9 @@ export const toggleWishlistPostThunk = createAsyncThunk(
       if (!postId) {
         return rejectWithValue("Post ID is required");
       }
-
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
       const token = getAuthToken(); // Retrieve the JWT token
-      const url = `/api/post/wishlisttoggle/${postId}`; // Backend route
+      const url = `${backendUrl}/api/post/wishlisttoggle/${postId}`; // Backend route
 
       const response = await fetch(url, {
         method: "POST",
@@ -132,8 +134,9 @@ export const addCommentThunk = createAsyncThunk(
   "post/addComment",
   async ({ postId, body, page = 1, per_page = 10 }, { rejectWithValue }) => {
     try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
       const token = getAuthToken();
-      const response = await fetch(`/api/post/comment/${postId}?page=${page}&per_page=${per_page}`, {
+      const response = await fetch(`${backendUrl}/api/post/comment/${postId}?page=${page}&per_page=${per_page}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -164,8 +167,9 @@ export const addReplyThunk = createAsyncThunk(
   "post/addReply",
   async ({ commentId, body }, { rejectWithValue }) => {
     try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
       const token = getAuthToken();
-      const response = await fetch(`/api/comments/${commentId}/reply`, {
+      const response = await fetch(`${backendUrl}/api/comments/${commentId}/reply`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

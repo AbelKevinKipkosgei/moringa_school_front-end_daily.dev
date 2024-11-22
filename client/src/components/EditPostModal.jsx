@@ -5,8 +5,9 @@ import "../styles/EditPostModal.css";
 
 const EditPostModal = ({ post, onClose, onSubmit }) => {
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
     try {
-      const response = await fetch(`http://127.0.0.1:5555/api/posts/edit/${post.id}`, {
+      const response = await fetch(`${backendUrl}/api/posts/edit/${post.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
