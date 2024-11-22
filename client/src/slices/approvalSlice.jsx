@@ -63,7 +63,7 @@ export const deletePost = createAsyncThunk(
 
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-      const response = await fetch(`${backendUrl}/admin/post/delete/${post_id}`, {
+      const response = await fetch(`${backendUrl}/api/admin/post/delete/${post_id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -232,7 +232,7 @@ const approvalSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(flagPost.fulfilled, (state, action) => {
+      .addCase(flagPost.fulfilled, (state) => {
         state.loading = false;
       })
       .addCase(flagPost.rejected, (state, action) => {
@@ -243,7 +243,7 @@ const approvalSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(unflagPost.fulfilled, (state, action) => {
+      .addCase(unflagPost.fulfilled, (state) => {
         state.loading = false;
       })
       .addCase(unflagPost.rejected, (state, action) => {
