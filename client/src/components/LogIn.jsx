@@ -18,7 +18,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate("/feed"); // Redirect to the feed if the user is already logged in
+      navigate("/"); // Redirect to the feed if the user is already logged in
     }
   }, [isLoggedIn, navigate]);
 
