@@ -1,15 +1,11 @@
-
 import React from "react";
 import { Formik, Form, Field } from "formik";
 import "../styles/EditPostModal.css";
 
 const EditPostModal = ({ post, onClose, onSubmit }) => {
-  const handleSubmit = async (values, { setSubmitting, setErrors }) => 
-    
-    try {
-    
-      const response = await fetch(`${backendUrl}/api/allposts/${post.id}`, {
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     try {
       const response = await fetch(`${backendUrl}/api/posts/edit/${post.id}`, {
         method: "PUT",
@@ -19,22 +15,17 @@ const EditPostModal = ({ post, onClose, onSubmit }) => {
         },
         body: JSON.stringify(values),
       });
-      
 
       if (!response.ok) {
         throw new Error("Failed to update post");
       }
-     
-      
 
       const updatedPost = await response.json();
       onSubmit(updatedPost.post); // Pass updated post back to parent
       onClose();
     } catch (error) {
-      
       setErrors({ submit: "Failed to update post." });
     } finally {
-      
       setSubmitting(false);
     }
   };
@@ -115,7 +106,3 @@ const EditPostModal = ({ post, onClose, onSubmit }) => {
 };
 
 export default EditPostModal;
-
-
-
-

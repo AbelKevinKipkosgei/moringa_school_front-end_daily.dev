@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -37,7 +36,6 @@ function ManagePosts() {
         }
 
         const data = await response.json();
-        console.log("API Response:", data); // Debugging line
 
         // Adjusted to handle the actual API response format
         if (data.posts && Array.isArray(data.posts)) {
@@ -60,7 +58,6 @@ function ManagePosts() {
 
   const handleApprove = async (postId) => {
     try {
-      const response = await fetch(`${backendUrl}/api/allposts/${postId}/approve`, {
       const response = await fetch(`${backendUrl}/api/posts/${postId}/approve`, {
         method: "PATCH",
         headers: {
@@ -85,7 +82,6 @@ function ManagePosts() {
 
   const handleFlag = async (postId) => {
     try {
-      const response = await fetch(`${backendUrl}/api/allposts/${postId}/flag`, {
       const response = await fetch(`${backendUrl}/api/posts/${postId}/flag`, {
         method: "PATCH",
         headers: {
@@ -106,51 +102,45 @@ function ManagePosts() {
     } catch (err) {
       dispatch(setError(err.message));
     }
-
-  }
-  const handleEdit =  (updatedPost) => {
-     localStorage.getItem("authToken")
-    
   };
 
-  const handleEdit = async (post, updatedData) => {
-    console.log("hello", localStorage.getItem("authToken"))
+  const handleEdit = async (updatedPost) => {
     try {
-      const response = await fetch(`${backendUrl}/api/posts/edit/${post.id}`, {
+      const response = await fetch(`${backendUrl}/api/posts/edit/${updatedPost.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`, 
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
-        body: JSON.stringify(updatedData), // Send the updated post data
+        body: JSON.stringify(updatedPost),
       });
 
       if (!response.ok) {
         throw new Error("Failed to update post");
       }
 
-      const updatedPost = await response.json();
+      const data = await response.json();
 
-
-      // Update the Redux store with the updated post 
+      // Update the Redux store
       dispatch(
         setFlaggedPosts(
           flaggedPosts.map((post) =>
-            post.id === updatedPost.id ? updatedPost: post
+            post.id === data.id ? data : post
           )
         )
-        
       );
       dispatch(
         setApprovedPosts(
           approvedPosts.map((post) =>
-            post.id === updatedPost.id ? updatedPost : post
+            post.id === data.id ? data : post
           )
         )
       );
-      // Close the modal after the update
+
       setSelectedPost(null);
-    
+    } catch (err) {
+      dispatch(setError(err.message));
+    }
   };
 
   const closeModal = () => {
@@ -226,7 +216,7 @@ function ManagePosts() {
         <EditPostModal
           post={selectedPost}
           onClose={closeModal}
-          onSubmit={handleEdit} // Pass handleEdit to the modal
+          onSubmit={handleEdit}
         />
       )}
     </div>
