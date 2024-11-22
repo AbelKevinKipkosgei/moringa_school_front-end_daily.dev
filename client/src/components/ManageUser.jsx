@@ -10,7 +10,7 @@ const ManageUser = () => {
   const users = useSelector((state) => state.users.users);
   const loading = useSelector((state) => state.users.loading);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [message, setMessage] = useState(""); 
+  const [successMessage, setSuccessMessage] = useState('');
 
   // Function to get the token from localStorage
   const getAuthToken = () => {
@@ -18,12 +18,12 @@ const ManageUser = () => {
     if (!token) {
       console.error("No token found in localStorage");
       setErrorMessage("No access token found. Redirecting...");
-      setTimeout(() => navigate("/login"), 3000); // Redirect to login after 3 seconds
+      setTimeout(() => navigate("/login"), 3000); 
     }
     return token;
   };
 
-  // Fetch users 
+  // Fetch users
   useEffect(() => {
     const token = getAuthToken();
     if (token) {
@@ -35,32 +35,64 @@ const ManageUser = () => {
 
   const handleDeactivate = async (user_id) => {
     try {
-      const response = await dispatch(deactivateUser(user_id)); 
+      const response = await dispatch(deactivateUser(user_id));
       if (response.meta.requestStatus === "fulfilled") {
-        setMessage({ user_id, text: "Successfully deactivated!" });
+        setSuccessMessage("User successfully deactivated!");
+      } else {
+        setErrorMessage("Failed to deactivate user."); 
       }
     } catch (error) {
-      setMessage({ user_id, text: "Error deactivating user." });
+      setErrorMessage("Error deactivating user."); 
     }
+    setTimeout(() => {
+      setSuccessMessage('');
+      setErrorMessage('');
+    }, 3000);
   };
-
+  
   const handleActivate = async (user_id) => {
     try {
-      const response = await dispatch(activateUser(user_id)); 
+      const response = await dispatch(activateUser(user_id));
       if (response.meta.requestStatus === "fulfilled") {
-        setMessage({ user_id, text: "Successfully activated!" });
+        setSuccessMessage("User successfully activated!");
+      } else {
+        setErrorMessage("Failed to activate user."); 
       }
     } catch (error) {
-      setMessage({ user_id, text: "Error activating user." });
+      setErrorMessage("Error activating user."); 
     }
+    setTimeout(() => {
+      setSuccessMessage('');
+      setErrorMessage('');
+    }, 3000);
   };
-  useEffect(() => {
-    console.log(users); // Log the users to ensure `activated` is set correctly
-  }, [users]);
+
+  const showPopup = (message, isSuccess = true) => {
+    setSuccessMessage(isSuccess ? message : "");
+    setErrorMessage(!isSuccess ? message : "");
+    setTimeout(() => {
+      setSuccessMessage("");
+      setErrorMessage("");
+    }, 2000); 
+  };
 
   return (
-    <div>
+    <div className="manage-user-container">
       <h2 className="manage-user-header">All Users</h2>
+
+      
+      {(successMessage || errorMessage) && (
+        <div className="popup-overlay">
+          <div
+            className={`popup-message ${
+              successMessage ? "success" : "error"
+            }`}
+          >
+            {successMessage || errorMessage}
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -84,14 +116,20 @@ const ManageUser = () => {
                   <td>{user.activated ? "YES" : "NO"}</td>
                   <td className="action-btns">
                     <button
-                      onClick={() => handleDeactivate(user.id)}
+                      onClick={() => {
+                        handleDeactivate(user.id);
+                        showPopup("User successfully deactivated!");
+                      }}
                       disabled={!user.activated}
                       className="deactivate-btn"
                     >
                       Deactivate
                     </button>
                     <button
-                      onClick={() => handleActivate(user.id)}
+                      onClick={() => {
+                        handleActivate(user.id);
+                        showPopup("User successfully activated!");
+                      }}
                       disabled={user.activated}
                       className="activate-btn"
                     >
@@ -110,6 +148,6 @@ const ManageUser = () => {
       )}
     </div>
   );
-}  
+};
 
 export default ManageUser;

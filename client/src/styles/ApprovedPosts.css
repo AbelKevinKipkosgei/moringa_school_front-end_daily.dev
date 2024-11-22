@@ -19,7 +19,7 @@
   }
   
   
-  /* Card styling for each post */
+  
   .approved-post-card {
     background-color: #fff;
     border: 1px solid #ddd;
@@ -34,20 +34,20 @@
     margin-bottom: 20px;
   }
   
-  /* Card hover effect */
+  
   .approved-post-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   }
   
-  /* Title styling */
+  
   .approved-post-card h3 {
     font-size: 20px;
     color: #333;
     margin-bottom: 10px;
   }
   
-  /* Image styling */
+  
   .approved-post-card img {
     max-width: 100%;
     height: auto;
@@ -55,7 +55,7 @@
     margin-bottom: 15px;
   }
   
-  /* Body of the post */
+  
   .approved-post-card p {
     font-size: 14px;
     color: #555;
@@ -66,14 +66,14 @@
     white-space: nowrap;
   }
   
-  /* Post info section */
+  
   .approved-post-info {
     font-size: 12px;
     color: #777;
     margin-bottom: 15px;
   }
   
-  /* Button container */
+  
   .approved-post-card button {
     padding: 12px 18px;
     background-color: #0056b3;
@@ -89,7 +89,7 @@
     background-color:#0056b3;
   }
   
-  /* Flagging reason container */
+  
 .flagging-reason {
   display: flex;
   flex-direction: column;
@@ -102,7 +102,7 @@
   border: 1px solid #ddd; 
 }
 
-/* Styling the textarea */
+
 .flagging-reason textarea {
   padding: 12px; 
   border-radius: 6px;
@@ -111,18 +111,19 @@
   width: 100%; 
   min-height: 120px; 
   background-color: #fff; 
+  color: black;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); 
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Focus effect for textarea */
+
 .flagging-reason textarea:focus {
   border-color: #0056b3; 
   outline: none; 
   box-shadow: 0 0 4px rgba(0, 86, 179, 0.5);
 }
 
-/* Submit button */
+
 .flagging-reason button {
   padding: 12px 18px; 
   font-size: 16px; 
@@ -135,24 +136,302 @@
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Hover effect for button */
+
 .flagging-reason button:hover {
-  background-color: #004291; 
+  background-color:#0056b3; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); 
 }
 
-/* Disabled button state */
+
 .flagging-reason button:disabled {
   background-color: #ddd; 
   cursor: not-allowed; 
   box-shadow: none; 
+
 }
 
+.delete-btn {
+  background-color: #0056b3; 
+  color: white; 
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+
+.delete-btn:hover {
+  background-color: #0056b3; 
+}
+
+
+.delete-confirmation button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+.delete-confirmation .delete-btn {
+  background-color: #0056b3;
+  color: white;
+}
+
+.delete-confirmation .delete-btn:hover {
+  background-color: #0056b3;
+}
+
+
+.delete-confirmation .cancel-btn {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.delete-confirmation .cancel-btn:hover {
+  background-color: #7f8c8d;
+}
+.delete-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(5px); 
+}
+
+
+.delete-modal {
+  background-color: white;
+  color: black;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.delete-modal button {
+  padding: 10px 15px;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-modal button:first-child {
+  background-color: #0056b3;
+  color: white;
+}
+
+.delete-modal button:last-child {
+  background-color: gray;
+  color: white;
+}
+
+
+
+.delete-modal-overlay.show .approved-posts-list {
+  filter: none;
+}
+
+
   
-  /* Loading state */
+  
   .loading {
     text-align: center;
     font-size: 18px;
     color: #333;
   }
   
+.flagging-reason {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.flagging-reason textarea {
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 100px;
+  max-height: 200px;
+}
+
+.flagging-reason button {
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.flagging-reason button:hover {
+  background-color: #0056b3;
+}
+
+
+.modal-blur {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content p {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.modal-content button {
+  background-color: #0056b3;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.modal-content button:hover {
+  background-color: #0056b3;
+}
+
+
+.delete-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.delete-modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+}
+
+.delete-modal p {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.delete-modal button {
+  background-color: #0056b3;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.delete-modal button:hover {
+  background-color: #0056b3;
+}
+
+.delete-modal button + button {
+  margin-left: 10px;
+  background-color: #4caf50;
+}
+
+.delete-modal button + button:hover {
+  background-color: #0056b3;
+}
+
+
+.delete-btn {
+  background-color: #0056b3; 
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+
+.delete-btn:hover {
+  background-color:#0056b3; 
+}
+
+
+.delete-confirmation button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+.delete-confirmation .delete-btn {
+  background-color: #0056b3;
+  color: white;
+}
+
+.delete-confirmation .delete-btn:hover {
+  background-color: #004a99;
+}
+
+
+.delete-confirmation .cancel-btn {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.delete-confirmation .cancel-btn:hover {
+  background-color: #7f8c8d;
+}
