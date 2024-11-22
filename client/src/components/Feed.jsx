@@ -18,11 +18,13 @@ const Feed = () => {
   const dispatch = useDispatch();
   const { posts, isLoading, error } = useSelector((state) => state.feed);
 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   useEffect(() => {
     const fetchPosts = async () => {
       dispatch(fetchPostsStart());
       try {
-        const response = await fetch("/api/allposts");
+        const response = await fetch(`${backendUrl}/api/allposts`);
         if (!response.ok) {
           throw new Error("Failed to fetch posts");
         }
@@ -34,7 +36,7 @@ const Feed = () => {
     };
 
     fetchPosts();
-  }, [dispatch]);
+  }, [dispatch, backendUrl]);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
