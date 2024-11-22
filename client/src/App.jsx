@@ -12,9 +12,7 @@ import AdminProtectedRoute from "./components/AdminProtectedRoute"
 import ManagePosts from "./components/ManagePosts";
 import ApprovedPosts from "./components/ApprovedPosts";
 import PostPage from "./pages/PostPage";
-import UnauthorizedPage from "./pages/UnauthorizedPage";
 import ManageUser from "./components/ManageUser"
-import EditPostModal from "./components/EditPostModal"
 import ManageCategory from "./components/ManageCategory";
 import CreatePostPage from "./pages/CreatePostPage";
 
