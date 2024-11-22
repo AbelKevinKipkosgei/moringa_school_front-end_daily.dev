@@ -5,7 +5,9 @@ import "../styles/EditPostModal.css";
 
 const EditPostModal = ({ post, onClose, onSubmit }) => {
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    
     try {
+    
       const response = await fetch(`http://127.0.0.1:5555/api/posts/edit/${post.id}`, {
         method: "PUT",
         headers: {
@@ -14,17 +16,22 @@ const EditPostModal = ({ post, onClose, onSubmit }) => {
         },
         body: JSON.stringify(values),
       });
+      
 
       if (!response.ok) {
         throw new Error("Failed to update post");
       }
+     
+      
 
       const updatedPost = await response.json();
       onSubmit(updatedPost.post); // Pass updated post back to parent
       onClose();
     } catch (error) {
+      
       setErrors({ submit: "Failed to update post." });
     } finally {
+      
       setSubmitting(false);
     }
   };
