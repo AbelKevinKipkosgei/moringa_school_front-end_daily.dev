@@ -22,7 +22,7 @@ function ManagePosts() {
     const fetchPosts = async () => {
       dispatch(setLoading(true));
       try {
-        const response = await fetch("http://127.0.0.1:5555/api/allposts", {
+        const response = await fetch(`${backendUrl}/api/allposts`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -58,7 +58,7 @@ function ManagePosts() {
 
   const handleApprove = async (postId) => {
     try {
-      const response = await fetch(`/api/posts/${postId}/approve`, {
+      const response = await fetch(`${backendUrl}/api/allposts/${postId}/approve`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -82,7 +82,7 @@ function ManagePosts() {
 
   const handleFlag = async (postId) => {
     try {
-      const response = await fetch(`/api/posts/${postId}/flag`, {
+      const response = await fetch(`${backendUrl}/api/allposts/${postId}/flag`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -208,4 +208,4 @@ function ManagePosts() {
   );
 }
 
-export default ManagePosts
+export default ManagePosts;
