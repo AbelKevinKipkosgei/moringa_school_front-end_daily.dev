@@ -1,4 +1,5 @@
-import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import React from "react";
+import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import "../styles/Techwriter.css";
 
 const Techwriter = () => {
@@ -15,7 +16,7 @@ const Techwriter = () => {
 
   return (
     <div className="techwriter-page">
-      
+      {/* Sidebar Navigation */}
       <nav className="sidebar">
         <h2 className="sidebar-heading">Techwriter Dashboard</h2>
         <ul className="sidebar-nav">
@@ -31,7 +32,6 @@ const Techwriter = () => {
           >
             Approved Posts
           </li>
-          
           <li
             className={isActive("/techwriter/managecategory") ? "active" : ""}
             onClick={handleCategory}
@@ -41,9 +41,9 @@ const Techwriter = () => {
         </ul>
       </nav>
 
-
+      {/* Main Content */}
       <div className="main-content">
-        <Outlet />
+        <Outlet /> {/* Renders nested routes */}
       </div>
     </div>
   );

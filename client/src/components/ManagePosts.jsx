@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -35,9 +34,9 @@ function ManagePosts() {
         if (!response.ok) {
           throw new Error("Failed to fetch posts");
         }
+      
 
         const data = await response.json();
-        console.log("API Response:", data); // Debugging line
 
         // Adjusted to handle the actual API response format
         if (data.posts && Array.isArray(data.posts)) {
@@ -106,41 +105,39 @@ function ManagePosts() {
     }
   };
 
-  const handleEdit = async (post, updatedData) => {
-    console.log("hello", localStorage.getItem("authToken"))
+  const handleEdit = async (updatedPost) => {
     try {
-      const response = await fetch(`${backendUrl}/api/posts/edit/${post.id}`, {
+      const response = await fetch(`${backendUrl}/api/posts/edit/${updatedPost.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`, 
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
-        body: JSON.stringify(updatedData), // Send the updated post data
+        body: JSON.stringify(updatedPost),
       });
 
       if (!response.ok) {
         throw new Error("Failed to update post");
       }
 
-      const updatedPost = await response.json();
+      const data = await response.json();
 
-      // Update the Redux store with the updated post 
+      // Update the Redux store
       dispatch(
         setFlaggedPosts(
           flaggedPosts.map((post) =>
-            post.id === updatedPost.post.id ? updatedPost.post : post
+            post.id === data.id ? data : post
           )
         )
-        
       );
       dispatch(
         setApprovedPosts(
           approvedPosts.map((post) =>
-            post.id === updatedPost.post.id ? updatedPost.post : post
+            post.id === data.id ? data : post
           )
         )
       );
-      // Close the modal after the update
+
       setSelectedPost(null);
     } catch (err) {
       dispatch(setError(err.message));
@@ -162,8 +159,69 @@ function ManagePosts() {
   const allPosts = [...approvedPosts, ...flaggedPosts];
 
   return (
-    <div>ManagePosts</div>
-  )
+    <div className="manage-posts">
+      <h2>All Posts</h2>
+      {allPosts.length === 0 ? (
+        <p>No posts found.</p>
+      ) : (
+        <ul className="post-list">
+          {allPosts.map((post) => (
+            <li key={post.id} className="post-card">
+              <img
+                src={post.thumbnail_url}
+                alt={post.title}
+                className="post-thumbnail"
+              />
+              <div className="post-details">
+                <h3>{post.title}</h3>
+                <p>{post.body}</p>
+                <p>
+                  <strong>Type:</strong> {post.post_type}
+                </p>
+                <p>
+                  <strong>Approved:</strong> {post.approved ? "Yes" : "No"}
+                </p>
+                <p>
+                  <strong>Flagged:</strong> {post.flagged ? "Yes" : "No"}
+                </p>
+              </div>
+              <div className="post-actions">
+                <button
+                  onClick={() => setSelectedPost(post)}
+                  className="edit-button"
+                >
+                  Edit
+                </button>
+                {!post.approved && (
+                  <button
+                    onClick={() => handleApprove(post.id)}
+                    className="approve-button"
+                  >
+                    Approve
+                  </button>
+                )}
+                {!post.flagged && (
+                  <button
+                    onClick={() => handleFlag(post.id)}
+                    className="flag-button"
+                  >
+                    🚩 Flag
+                  </button>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+      {selectedPost && (
+        <EditPostModal
+          post={selectedPost}
+          onClose={closeModal}
+          onSubmit={handleEdit}
+        />
+      )}
+    </div>
+  );
 }
 
-export default ManagePosts
+export default ManagePosts;
