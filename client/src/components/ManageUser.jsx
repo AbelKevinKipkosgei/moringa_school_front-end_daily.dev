@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { fetchUsers, deactivateUser, activateUser } from '../slices/userSlice';
 import "../styles/ManageUser.css"
@@ -31,7 +30,7 @@ const ManageUser = () => {
         setErrorMessage("Failed to fetch users: " + err.message)
       );
     }
-  }, [dispatch, navigate]);
+  });
 
   const handleDeactivate = async (user_id) => {
     try {
@@ -41,7 +40,7 @@ const ManageUser = () => {
       } else {
         setErrorMessage("Failed to deactivate user."); 
       }
-    } catch (error) {
+    } catch  {
       setErrorMessage("Error deactivating user."); 
     }
     setTimeout(() => {
@@ -58,7 +57,7 @@ const ManageUser = () => {
       } else {
         setErrorMessage("Failed to activate user."); 
       }
-    } catch (error) {
+    } catch {
       setErrorMessage("Error activating user."); 
     }
     setTimeout(() => {
