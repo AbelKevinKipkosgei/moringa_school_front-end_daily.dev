@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Navbar from "./components/Navbar";
+import Profile from "./components/Profile";
 import Admin from "./pages/Admin";
 import FeedPage from "./pages/FeedPage";
 import LogInPage from "./pages/LogInPage";
@@ -26,11 +27,12 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/feed" element={<FeedPage />} />
+        <Route path="/" element={<FeedPage />} />
         <Route path="/post/:postId" element={<PostPage />} />
         <Route path="/create-post" element={<CreatePostPage />} />
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/profile/:userId" element={<Profile />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
         {/* Admin Route */}
