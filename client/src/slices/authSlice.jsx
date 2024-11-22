@@ -2,15 +2,17 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const TOKEN_KEY = "authToken";
 const USER_ROLE_KEY = "userRole";
-const userId = "userId";
+const USER_ID_KEY = "userId";
+const PROFILE_PICTURE_KEY = "profilePicture";
 
 const initialState = {
   isLoggedIn: !!localStorage.getItem(TOKEN_KEY), // Check if token exists in localStorage
   userRole: localStorage.getItem(USER_ROLE_KEY) || null,
-  userId: localStorage.getItem("userId") || null,
+  userId: localStorage.getItem(USER_ID_KEY) || null,
+  profilePicture: localStorage.getItem(PROFILE_PICTURE_KEY) || null,
   loading: false,
   error: null,
-  userInfo: null, 
+  userInfo: null,
 };
 
 const authSlice = createSlice({
@@ -19,20 +21,35 @@ const authSlice = createSlice({
   reducers: {
     // Login actions
     login(state, action) {
-      const { token, role } = action.payload;
-      localStorage.setItem(TOKEN_KEY, token); // Save token to local storage
-      localStorage.setItem(USER_ROLE_KEY, role); // Save role to local storage
-      localStorage.setItem("userId", userId);
+      const { token, role, userId, profilePicture } = action.payload;
+
+      // Save all necessary data to localStorage
+      localStorage.setItem(TOKEN_KEY, token);
+      localStorage.setItem(USER_ROLE_KEY, role);
+      localStorage.setItem(USER_ID_KEY, userId);
+      localStorage.setItem(PROFILE_PICTURE_KEY, profilePicture);
+
+      // Update Redux state
       state.isLoggedIn = true;
       state.userRole = role;
       state.userId = userId;
+      state.profilePicture = profilePicture;
     },
+
     logout(state) {
-      localStorage.removeItem(TOKEN_KEY); // Remove token from local storage
-      localStorage.removeItem(USER_ROLE_KEY); // Remove role from local storage
+      // Remove data from localStorage
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_ROLE_KEY);
+      localStorage.removeItem(USER_ID_KEY);
+      localStorage.removeItem(PROFILE_PICTURE_KEY);
+
+      // Update Redux state
       state.isLoggedIn = false;
       state.userRole = null;
+      state.userId = null;
+      state.profilePicture = null;
     },
+
     refreshToken(state, action) {
       const { newToken } = action.payload;
       localStorage.setItem(TOKEN_KEY, newToken); // Update token in local storage
@@ -66,5 +83,6 @@ export const {
 // Selector to get user role from Redux state
 export const selectUserRole = (state) => state.auth.userRole;
 export const selectUserId = (state) => state.auth.userId;
+export const selectUserPicture = (state) => state.auth.profilePicture;
 
 export default authSlice.reducer;

@@ -2,9 +2,10 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 20px;
+  gap: 10px;
   padding: 10px;
   align-items: center;
+  position: relative;
 }
 
 /* Card styling */
@@ -19,6 +20,7 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
   margin-bottom: 20px;
+  margin-top: 10px;
 }
 
 .post-card:hover {
@@ -94,6 +96,34 @@
 
 .post-card-button:hover {
   background-color: #0056b3;
+}
+
+.create-post-btn {
+  position: absolute;
+  top: -32px;
+  left: 10px;
+  z-index: 10;
+}
+
+.create-post-btn button {
+  background-color: #1673ff; 
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition on hover */
+}
+
+.create-post-btn button:hover {
+  background-color: #299fff;
+  transform: scale(1.05); 
+}
+
+.create-post-btn button:active {
+  transform: scale(1);
 }
 
 /* Mobile-friendly styling */

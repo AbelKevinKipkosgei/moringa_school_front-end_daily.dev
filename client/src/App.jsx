@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Navbar from "./components/Navbar";
+import Profile from "./components/Profile";
 import Admin from "./pages/Admin";
 import FeedPage from "./pages/FeedPage";
 import LogInPage from "./pages/LogInPage";
@@ -11,10 +12,9 @@ import AdminProtectedRoute from "./components/AdminProtectedRoute"
 import ManagePosts from "./components/ManagePosts";
 import ApprovedPosts from "./components/ApprovedPosts";
 import PostPage from "./pages/PostPage";
-import UnauthorizedPage from "./pages/UnauthorizedPage";
 import ManageUser from "./components/ManageUser"
-import EditPostModal from "./components/EditPostModal"
 import ManageCategory from "./components/ManageCategory";
+import CreatePostPage from "./pages/CreatePostPage";
 
 
 
@@ -26,21 +26,14 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
-        
-        <Route path="/feed" element={<FeedPage />} />
+        <Route path="/" element={<FeedPage />} />
         <Route path="/post/:postId" element={<PostPage />} />
+        <Route path="/create-post" element={<CreatePostPage />} />
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-
+        <Route path="/profile/:userId" element={<Profile />} />
         <Route path="/Admin" element={<Admin />} />
         <Route path="/Techwriter" element={<Techwriter />} />
-        
-        
-        
-        {/* Admin Route with Nested Routes */}
-        {/* <Route path="/admin" element={<Admin />}>
-
-        <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
         {/* Admin Route */}
         <Route
@@ -48,7 +41,7 @@ function App() {
           element={
             <AdminProtectedRoute
               isLoggedIn={isLoggedIn}
-              userRole={userRole}  
+              userRole={userRole}
               allowedRoles={["admin"]}
             >
               <Admin />
@@ -76,7 +69,7 @@ function App() {
           element={
             <AdminTechwriterProtectedRoute
               isLoggedIn={isLoggedIn}
-              userRole={userRole}  
+              userRole={userRole}
               allowedRoles={["techwriter", "admin"]}
             >
               <Techwriter />
