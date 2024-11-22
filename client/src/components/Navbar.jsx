@@ -50,7 +50,7 @@ function Navbar() {
           </li>
         )}
         <li className="navbar-item">
-          <Link to="/feed">Feed</Link>
+          <Link to="/">Feed</Link>
         </li>
         {!isLoggedIn ? (
           <>
