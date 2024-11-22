@@ -1,7 +1,6 @@
 import ManageUser from "../components/ManageUser"
-import React from "react"
 import "../styles/ManageUser.css"
-const ManageUser = () => {
+const ManageUserPage = () => {
     return (
         <div>
             <h2>Manage User</h2>
@@ -9,4 +8,4 @@ const ManageUser = () => {
         </div>
     )
 }
-export default ManageUser
+export default ManageUserPage
