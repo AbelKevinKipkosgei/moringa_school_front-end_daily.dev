@@ -11,7 +11,8 @@ const getAuthToken = () => {
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async (token, { rejectWithValue }) => {
   try {
-    const response = await fetch('http://localhost:5555/api/admin/users', {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const response = await fetch(`${backendUrl}/api/admin/users`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -37,8 +38,10 @@ export const deactivateUser = createAsyncThunk(
         return rejectWithValue('No access token found');
       }
 
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
       const response = await fetch(
-        `http://localhost:5555/api/admin/user/deactivate/${user_id}`,
+        `${backendUrl}/api/admin/user/deactivate/${user_id}`,
         {
           method: 'PUT',
           headers: {
@@ -72,9 +75,10 @@ export const activateUser = createAsyncThunk(
       if (!token) {
         return rejectWithValue('No access token found');
       }
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
       const response = await fetch(
-        `http://localhost:5555/api/admin/user/reactivate/${user_id}`,
+        `${backendUrl}/api/admin/user/reactivate/${user_id}`,
         {
           method: 'PUT',
           headers: {

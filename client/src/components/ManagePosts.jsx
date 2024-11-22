@@ -18,6 +18,8 @@ function ManagePosts() {
 
   const [selectedPost, setSelectedPost] = useState(null); // State for selected post for editing
 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   useEffect(() => {
     const fetchPosts = async () => {
       dispatch(setLoading(true));
@@ -54,11 +56,12 @@ function ManagePosts() {
     };
 
     fetchPosts();
-  }, [dispatch]);
+  }, [dispatch, backendUrl]);
 
   const handleApprove = async (postId) => {
     try {
       const response = await fetch(`${backendUrl}/api/allposts/${postId}/approve`, {
+      const response = await fetch(`${backendUrl}/api/posts/${postId}/approve`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -83,6 +86,7 @@ function ManagePosts() {
   const handleFlag = async (postId) => {
     try {
       const response = await fetch(`${backendUrl}/api/allposts/${postId}/flag`, {
+      const response = await fetch(`${backendUrl}/api/posts/${postId}/flag`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -102,11 +106,32 @@ function ManagePosts() {
     } catch (err) {
       dispatch(setError(err.message));
     }
+
   }
   const handleEdit =  (updatedPost) => {
      localStorage.getItem("authToken")
     
-     
+  };
+
+  const handleEdit = async (post, updatedData) => {
+    console.log("hello", localStorage.getItem("authToken"))
+    try {
+      const response = await fetch(`${backendUrl}/api/posts/edit/${post.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`, 
+        },
+        body: JSON.stringify(updatedData), // Send the updated post data
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update post");
+      }
+
+      const updatedPost = await response.json();
+
+
       // Update the Redux store with the updated post 
       dispatch(
         setFlaggedPosts(

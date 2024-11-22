@@ -6,6 +6,7 @@ import { signupStart, signupSuccess, signupFailure } from "../slices/authSlice";
 import "../styles/SignUp.css";
 
 const SignUp = () => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
@@ -56,7 +57,7 @@ const SignUp = () => {
         formData.append("bio", values.bio);
         formData.append("profile_pic_url", values.profile_pic_url);
 
-        const response = await fetch("/api/signup", {
+        const response = await fetch(`${backendUrl}/api/signup`, {
           method: "POST",
           body: formData, // FormData automatically sets the appropriate Content-Type
         });

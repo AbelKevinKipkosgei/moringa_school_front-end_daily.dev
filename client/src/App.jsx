@@ -80,6 +80,7 @@ function App() {
        
           <Route path="manageposts" element={<ManagePosts />} />
           <Route path="approvedposts" element={<ApprovedPosts />} />
+          <Route path="managecategory" element={<ManageCategory />} />
         </Route> 
       </Routes>
     </Router>

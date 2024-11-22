@@ -12,6 +12,7 @@ import "../styles/CreatePostPage.css"; // Custom styling for the form
 
 
 const CreatePostPage = () => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -54,7 +55,7 @@ const handleSubmit = async (e) => {
       throw new Error("Authentication token is missing");
     }
 
-    const response = await fetch("/api/posts/createpost", {
+    const response = await fetch(`${backendUrl}/api/posts/createpost`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${authToken}`,

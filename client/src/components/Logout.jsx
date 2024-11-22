@@ -8,7 +8,7 @@ const Logout = () => {
 
   const handleLogout = () => {
     dispatch(logout()); // Dispatch logout action
-    navigate("/feed"); // Redirect to homepage or login page
+    navigate("/"); // Redirect to homepage or login page
   };
 
   return (

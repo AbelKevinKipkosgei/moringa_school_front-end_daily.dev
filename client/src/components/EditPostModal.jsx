@@ -4,11 +4,14 @@ import { Formik, Form, Field } from "formik";
 import "../styles/EditPostModal.css";
 
 const EditPostModal = ({ post, onClose, onSubmit }) => {
-  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+  const handleSubmit = async (values, { setSubmitting, setErrors }) => 
     
     try {
     
       const response = await fetch(`${backendUrl}/api/allposts/${post.id}`, {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    try {
+      const response = await fetch(`${backendUrl}/api/posts/edit/${post.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

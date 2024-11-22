@@ -14,9 +14,11 @@ const Login = () => {
   // Check if the user is already logged in via Redux state
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   useEffect(() => {
     if (isLoggedIn) {
-      navigate("/feed"); // Redirect to the feed if the user is already logged in
+      navigate("/"); // Redirect to the feed if the user is already logged in
     }
   }, [isLoggedIn, navigate]);
 
@@ -36,7 +38,7 @@ const Login = () => {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        const response = await fetch("/api/login", {
+        const response = await fetch(`${backendUrl}/api/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -12,7 +12,7 @@ const getAuthToken = () => {
   return token;
 };
 
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const createCategory = createAsyncThunk(
   'categories/createCategory',
@@ -25,7 +25,7 @@ export const createCategory = createAsyncThunk(
       }
 
      
-      const response = await fetch('http://localhost:4000/api/categories/createcategory', {
+      const response = await fetch(`${backendUrl}/api/categories/createcategory`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {approvePost,setApprovedPosts,setLoading,setError,deletePost,flagPost,unflagPost} from '../slices/approvalSlice';
 import { useNavigate } from 'react-router-dom';
@@ -19,13 +19,13 @@ const ApprovedPosts = () => {
   // Fetching posts from Redux state
   const { approvedPosts, loading, error } = useSelector((state) => state.approvals);
 
-
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   // Fetch posts
   useEffect(() => {
     const fetchPosts = async () => {
       dispatch(setLoading(true));
       try {
-        const response = await fetch('http://127.0.0.1:5555/api/allposts');
+        const response = await fetch(`${backendUrl}/api/allposts`);
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
@@ -40,7 +40,7 @@ const ApprovedPosts = () => {
     };
 
     fetchPosts();
-  }, [dispatch]);
+  }, [dispatch, backendUrl]);
 
   // Loading state
   if (loading) return <p>Loading posts...</p>;
