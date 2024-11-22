@@ -55,7 +55,7 @@ export const deactivateUser = createAsyncThunk(
         throw new Error("Failed to deactivate user");
       }
 
-      const data = await response.json();
+      //const data = await response.json();
 
       
       
@@ -93,7 +93,7 @@ export const activateUser = createAsyncThunk(
         throw new Error("Failed to activate user");
       }
 
-      const data = await response.json();
+      //const data = await response.json();
 
       // Return user_id to update the state later
       
@@ -128,7 +128,7 @@ const userReducer = createSlice({
         state.error = action.payload;
       })
       .addCase(deactivateUser.fulfilled, (state, action) => {
-        const { user_id, status ,message} = action.payload;
+        const { user_id ,message} = action.payload;
         const updatedUsers = state.users.map((user) =>
           user.id === user_id ? { ...user, activated:false } : user
         );
@@ -137,7 +137,7 @@ const userReducer = createSlice({
 
       })
       .addCase(activateUser.fulfilled, (state, action) => {
-        const { user_id, status,message } = action.payload;
+        const { user_id,message } = action.payload;
         const updatedUsers = state.users.map((user) =>
           user.id === user_id ? { ...user, activated:true } : user
         );
@@ -151,7 +151,7 @@ const userReducer = createSlice({
         state.message = action.payload;
       })
       .addCase(updateUserStatus, (state, action) => {
-        const { user_id, status } = action.payload;
+        const { user_id } = action.payload;
         const updatedUsers = state.users.map((user) =>
           user.id === user_id ? { ...user, activated: true } : user
         );
