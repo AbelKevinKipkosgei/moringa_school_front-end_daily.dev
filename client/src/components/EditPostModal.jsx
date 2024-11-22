@@ -8,7 +8,7 @@ const EditPostModal = ({ post, onClose, onSubmit }) => {
     
     try {
     
-      const response = await fetch(`http://127.0.0.1:5555/api/posts/edit/${post.id}`, {
+      const response = await fetch(`${backendUrl}/api/allposts/${post.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
