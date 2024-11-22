@@ -2,15 +2,13 @@
 
 import React, { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-
+import ManagePosts from "../components/ManagePosts";
 
 
 import "../styles/Techwriter.css";
 
 // Mock component for Manage Posts
-const ManagePosts = () => {
-  return <div className="manage-posts">All Posts</div>;
-};
+
 
 const Techwriter = () => {
   const [activeTab, setActiveTab] = useState("manageposts");
@@ -42,12 +40,7 @@ const Techwriter = () => {
           >
             Approved Posts
           </li>
-          <li
-            className={isActive("flaggedposts") ? "active" : ""}
-            onClick={handleFlaggedPosts}
-          >
-            Flagged Posts
-          </li>
+          
         </ul>
       </nav>
 
@@ -58,9 +51,7 @@ const Techwriter = () => {
         {activeTab === "approvedposts" && (
           <div className="approved-posts">Approved Posts</div>
         )}
-        {activeTab === "flaggedposts" && (
-          <div className="flagged-posts">Flagged Posts</div>
-        )}
+        
 
         <Outlet /> {/* Required to render nested routes */}
 
