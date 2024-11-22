@@ -102,31 +102,16 @@ function ManagePosts() {
     } catch (err) {
       dispatch(setError(err.message));
     }
-  };
-
-  const handleEdit = async (post, updatedData) => {
-    console.log("hello", localStorage.getItem("authToken"))
-    try {
-      const response = await fetch(`http://127.0.0.1:5555/api/posts/edit/${post.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`, 
-        },
-        body: JSON.stringify(updatedData), // Send the updated post data
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update post");
-      }
-
-      const updatedPost = await response.json();
-
+  }
+  const handleEdit =  (updatedPost) => {
+     localStorage.getItem("authToken")
+    
+     
       // Update the Redux store with the updated post 
       dispatch(
         setFlaggedPosts(
           flaggedPosts.map((post) =>
-            post.id === updatedPost.post.id ? updatedPost.post : post
+            post.id === updatedPost.id ? updatedPost: post
           )
         )
         
@@ -134,15 +119,13 @@ function ManagePosts() {
       dispatch(
         setApprovedPosts(
           approvedPosts.map((post) =>
-            post.id === updatedPost.post.id ? updatedPost.post : post
+            post.id === updatedPost.id ? updatedPost : post
           )
         )
       );
       // Close the modal after the update
       setSelectedPost(null);
-    } catch (err) {
-      dispatch(setError(err.message));
-    }
+    
   };
 
   const closeModal = () => {
@@ -160,8 +143,69 @@ function ManagePosts() {
   const allPosts = [...approvedPosts, ...flaggedPosts];
 
   return (
-    <div>ManagePosts</div>
-  )
+    <div className="manage-posts">
+      <h2>All Posts</h2>
+      {allPosts.length === 0 ? (
+        <p>No posts found.</p>
+      ) : (
+        <ul className="post-list">
+          {allPosts.map((post) => (
+            <li key={post.id} className="post-card">
+              <img
+                src={post.thumbnail_url}
+                alt={post.title}
+                className="post-thumbnail"
+              />
+              <div className="post-details">
+                <h3>{post.title}</h3>
+                <p>{post.body}</p>
+                <p>
+                  <strong>Type:</strong> {post.post_type}
+                </p>
+                <p>
+                  <strong>Approved:</strong> {post.approved ? "Yes" : "No"}
+                </p>
+                <p>
+                  <strong>Flagged:</strong> {post.flagged ? "Yes" : "No"}
+                </p>
+              </div>
+              <div className="post-actions">
+                <button
+                  onClick={() => setSelectedPost(post)}
+                  className="edit-button"
+                >
+                  Edit
+                </button>
+                {!post.approved && (
+                  <button
+                    onClick={() => handleApprove(post.id)}
+                    className="approve-button"
+                  >
+                    Approve
+                  </button>
+                )}
+                {!post.flagged && (
+                  <button
+                    onClick={() => handleFlag(post.id)}
+                    className="flag-button"
+                  >
+                    🚩 Flag
+                  </button>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+      {selectedPost && (
+        <EditPostModal
+          post={selectedPost}
+          onClose={closeModal}
+          onSubmit={handleEdit} // Pass handleEdit to the modal
+        />
+      )}
+    </div>
+  );
 }
 
 export default ManagePosts
