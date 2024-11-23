@@ -13,8 +13,10 @@ export const fetchUsers = createAsyncThunk('users/fetchUsers', async (token, { r
   try {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const response = await fetch(`${backendUrl}/api/admin/users`, {
+      method:  'GET',
       headers: {
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
     });
 
@@ -23,6 +25,7 @@ export const fetchUsers = createAsyncThunk('users/fetchUsers', async (token, { r
     }
 
     const data = await response.json();
+    console.log('Fetched users:', data);  
     return data;
   } catch (error) {
     return rejectWithValue(error.message || 'Failed to fetch users');
@@ -120,6 +123,7 @@ const userReducer = createSlice({
         state.error = null;
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
+        console.log('Action payload:', action.payload);
         state.users = action.payload.users;
         state.loading = false;
       })

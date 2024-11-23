@@ -25,12 +25,13 @@ const ManageUser = () => {
   // Fetch users
   useEffect(() => {
     const token = getAuthToken();
+    console.log('Token:', token);
     if (token) {
-      dispatch(fetchUsers(token)).catch((err) =>
+      dispatch(fetchUsers(token)).unwrap().catch((err) =>
         setErrorMessage("Failed to fetch users: " + err.message)
       );
     }
-  });
+  },[dispatch]);
 
   const handleDeactivate = async (user_id) => {
     try {
